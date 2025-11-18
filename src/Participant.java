@@ -1,33 +1,20 @@
-public class Participant {
+public class Participant extends Person {
     private final String ID;
-    private String name;
-    private String email;
     private Preference interest;
     private Personality personality;
+    private static int totalParticipants;
 
-    public Participant(String ID, String name, String email) {
+    public Participant(String name, String email, String ID) {
+        super(name, email);
         this.ID = ID;
-        this.name = name;
-        this.email = email;
+        totalParticipants++;
     }
 
     public String getID() {
         return ID;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public static int getTotalParticipants() {
+        return totalParticipants;
     }
 }
