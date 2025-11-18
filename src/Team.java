@@ -1,14 +1,13 @@
 import java.util.Arrays;
 
 public class Team {
-    private final int ID;
-    private final short size;
+    private final int ID;           // Each team is unique and the id cannot be changed
+    private static short size;       // Not gonna have alot of team members so short, wont change so final
     private String name;
     private final Participant[] participants;       // teams cannot be changed
 
-    public Team(int ID, short size, String name) {
+    public Team(int ID, String name) {
         this.ID = ID;
-        this.size = size;
         this.name = name;
         participants = new Participant[size];
     }
@@ -19,6 +18,10 @@ public class Team {
 
     public short getSize() {
         return size;
+    }
+
+    public static void setSize(short size) {
+        Team.size = size;
     }
 
     public String getName() {

@@ -1,30 +1,41 @@
-import java.io.File;
+import java.util.Scanner;
 
+public class Organizer extends Person {
 
-public class Organizer {
-
-    private static Organizer organizer;
-
-    private Organizer() {
-
+    public Organizer(String name, String email) {
+        super(name, email);
     }
 
-    public static Organizer getInstance() {
-        if (organizer == null) {
-            organizer = new Organizer();
-        }
-        return organizer;
-    }
-
-    public boolean uploadFile(File file) {
+    public boolean uploadFile() {
+        System.out.print("Enter file name: ");
         return false;
     }
 
     public void defineTeamSize() {
+        System.out.print("Enter team size: ");
+        Scanner scanner = new Scanner(System.in);
+        String line = scanner.nextLine();
 
+        if (line.isEmpty()) {
+            System.out.println("Team size cannot be empty.");
+            return;
+        }
+        try {
+            short teamSize = Short.parseShort(line);
+
+            int totalParticipants = Participant.getTotalParticipants();
+            if (teamSize > totalParticipants) {
+                System.out.println("Team size cannot be greater than the total number of participants.");
+                return;
+            }
+            Team.setSize(teamSize);
+        } catch (NumberFormatException e) {
+            System.out.println("Team size must be an integer.");
+        }
     }
 
     public boolean initiateFormation() {        // If exporting fails, shows false
-        return false;
+        defineTeamSize();
+        return true;
     }
 }
