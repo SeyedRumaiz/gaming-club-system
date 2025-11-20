@@ -1,6 +1,7 @@
 public class Participant extends Person {
     private final String ID;
-    private Preference interest;
+    private GamingPreference preference;
+    private Role rolePreferred;
     private Personality personality;
     private static int totalParticipants;
 
