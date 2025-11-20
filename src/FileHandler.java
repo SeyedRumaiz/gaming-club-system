@@ -3,15 +3,15 @@ import java.util.List;
 
 public final class FileHandler {            // not gonna inherit
 
-    public static boolean validateFileExistence(String fileName) {
+    public static boolean isFileExistent(String fileName) {
         return new File(fileName).exists();
     }
 
-    public static boolean validateFileFormat(String fileFormat) {
+    public static boolean isCSV(String fileFormat) {
         return false;
     }
 
-    public static boolean validateMissingFields(String fileName) {
+    public static boolean hasMissingFields(String fileName) {
         return false;
     }
 
@@ -19,7 +19,11 @@ public final class FileHandler {            // not gonna inherit
         return false;
     }
 
-    public static List<Participant> loadTeams(String fileName) {
+    public static boolean storeFile(String fileName) {
+        return false;
+    }
+
+    public static List<Participant> loadParticipants(String fileName) {
         return null;
     }
 }
