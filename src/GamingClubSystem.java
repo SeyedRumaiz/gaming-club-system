@@ -1,14 +1,19 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class GamingClubSystem {
     private List<Participant> participants;
     private List<Team> teams;
     private Organizer organizer;
+    private PersonalityClassifier personalityClassifier;
     private short teamSize;
     private String password;
+    private Survey survey;
 
     public GamingClubSystem() {
-
+        participants = new ArrayList<>();
+        teams = new ArrayList<>();
+        organizer = null;
     }
 
     public List<Participant> getParticipants() {
@@ -59,5 +64,7 @@ public class GamingClubSystem {
 
     }
 
-
+    public void setSurvey(Survey survey) {
+        this.survey = survey;
+    }
 }
