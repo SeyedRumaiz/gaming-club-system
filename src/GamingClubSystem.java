@@ -88,6 +88,14 @@ public class GamingClubSystem {
         }
     }
 
+    public void initiateSurvey(Scanner scanner) {
+        survey.getController().startSurvey(scanner);
+    }
+
+    public void addOrganizer(String name, String email) {
+        this.organizer = new Organizer(name, email);
+    }
+
     public void displayParticipantMenu(Scanner scanner) {
         System.out.println("""
                 1: Complete Survey
@@ -98,7 +106,7 @@ public class GamingClubSystem {
 
         switch (choice) {
             case 1 -> {
-
+                survey.getController().startSurvey(scanner);
             } case 2 -> {
 
             } default -> {
