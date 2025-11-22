@@ -6,6 +6,7 @@ public class Survey {
     private final LocalDate expirationDate;
     private final String[] personalityQuestions;
     private final String[] interestQuestions;
+    private SurveyController controller;
 
     public Survey(int ID, LocalDate creationDate, LocalDate expirationDate) {
         this.ID = ID;
@@ -15,6 +16,8 @@ public class Survey {
         interestQuestions = new String[3];
         initializePersonalityQuestions();
         initializeInterestQuestions();
+        controller = new SurveyController();
+        controller.setSurvey(this);
     }
 
     public void initializePersonalityQuestions() {
@@ -55,5 +58,9 @@ public class Survey {
 
     public String[] getInterestQuestions() {
         return interestQuestions;
+    }
+
+    public SurveyController getController() {
+        return controller;
     }
 }
