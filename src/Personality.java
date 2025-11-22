@@ -18,15 +18,7 @@ public class Personality {
         return type;
     }
 
-    public void classify() {
-        if (score >= 90) {
-            type = "Leader";
-        } else if (score >= 70) {
-            type = "Balanced";
-        } else if (score >= 50) {
-            type = "Thinker";
-        } else {
-            type = "None";
-        }
+    public void setType(String type) {
+        this.type = type;
     }
 }
