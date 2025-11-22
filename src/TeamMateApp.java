@@ -7,34 +7,37 @@ import java.util.Scanner;
 public class TeamMateApp {
     public static void main(String[] args) {
         GamingClubSystem gamingClubSystem = new GamingClubSystem();
+        LoginManager loginManager = new LoginManager();
         Survey survey = new Survey(1, LocalDate.of(2025, 5, 5), LocalDate.now());
         gamingClubSystem.setSurvey(survey);
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Welcome to Gaming Club System!");
-        System.out.println("1: Login");
-        System.out.println("2: Exit");
-        System.out.print("Please enter your choice : ");
-        int choice = scanner.nextInt();
-        outer: while (true) {
+        System.out.println("\nWelcome to Gaming Club System!");
+
+        while (true) {
+            int choice = loginManager.login(scanner);
+
             switch (choice) {
                 case 1 -> {
-                    System.out.print("Are you the Organizer? (Y/N): ");
-                    String response = scanner.next();
-
-                    if (response.equals("Y")) {
-                        System.out.print("Enter password: ");
-                        String password = scanner.nextLine();
-
+                    String identity = loginManager.requestIdentity(scanner, gamingClubSystem);
+                    if (identity.equals("Organizer")) {
+                        boolean loggedIn = loginManager.authenticateOrganizer(scanner, gamingClubSystem);
+                        if (loggedIn) {
+                            System.out.print("Successfully logged in!");
+                            System.out.println();
+                            gamingClubSystem.displayOrganizerMenu(scanner);
+                        } else {
+                            System.out.println("Incorrect password.");
+                        }
                     } else {
-
+                        gamingClubSystem.displayParticipantMenu(scanner);      // anything else other tan an Organizer
                     }
                 }
-
                 case 2 -> {
-                    System.out.println("Goodbye.");
-                    break outer;
+                    System.out.print("Goodbye.");
+                    return;
                 }
+                default -> System.out.println("Invalid choice.");
             }
         }
     }
