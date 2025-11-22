@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class GamingClubSystem {
     private List<Participant> participants;
@@ -7,7 +8,7 @@ public class GamingClubSystem {
     private Organizer organizer;
     private PersonalityClassifier personalityClassifier;
     private short teamSize;
-    private String password;
+    private String password = "admin";
     private Survey survey;
 
     public GamingClubSystem() {
@@ -56,15 +57,53 @@ public class GamingClubSystem {
         this.password = password;
     }
 
-    public void requestIdentity() {
-
-    }
-
-    public void requestPassword() {
-
+    public PersonalityClassifier getPersonalityClassifier() {
+        return personalityClassifier;
     }
 
     public void setSurvey(Survey survey) {
         this.survey = survey;
+    }
+
+    public void displayOrganizerMenu(Scanner scanner) {
+        System.out.println("""
+                1: Upload CSV
+                2: Initiate team formation
+                3: Exit""");
+
+        System.out.print("Enter your choice: ");
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+
+        switch (choice) {
+            case 1 -> {
+                organizer.uploadFile();
+            } case 2 -> {
+                organizer.initiateFormation();
+            } case 3 -> {
+
+            } default -> {
+                System.out.println("Invalid choice. Try again");
+            }
+        }
+    }
+
+    public void displayParticipantMenu(Scanner scanner) {
+        System.out.println("""
+                1: Complete Survey
+                2: Exit""");
+        System.out.print("Enter your choice: ");
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+
+        switch (choice) {
+            case 1 -> {
+
+            } case 2 -> {
+
+            } default -> {
+                System.out.println("Invalid choice. Try again");
+            }
+        }
     }
 }
