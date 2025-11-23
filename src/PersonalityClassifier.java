@@ -9,13 +9,18 @@ public class PersonalityClassifier {
         this.thinkerMin = 50;
     }
 
-    public Personality classify(short score) {
-        Personality personality = new Personality(score);
-        if (score >= leaderMin) {
+    public Personality classify(short[] score) {
+        short totalScore = 0;
+        for (short value : score) {
+            totalScore += value;
+        }
+
+        Personality personality = new Personality(totalScore);
+        if (totalScore >= leaderMin) {
             personality.setType("Leader");
-        } else if (score >= balancedMin) {
+        } else if (totalScore >= balancedMin) {
             personality.setType("Balanced");
-        } else if (score >= thinkerMin) {
+        } else if (totalScore >= thinkerMin) {
             personality.setType("Thinker");
         } else {
             personality.setType("Unknown");

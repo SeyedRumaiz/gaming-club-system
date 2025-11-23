@@ -1,23 +1,20 @@
 import java.time.LocalDate;
+import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Survey {
-    private final int ID;
-    private final LocalDate creationDate;
-    private final LocalDate expirationDate;
     private final String[] personalityQuestions;
     private final String[] interestQuestions;
     private SurveyController controller;
+    private SurveyResponse response;
 
-    public Survey(int ID, LocalDate creationDate, LocalDate expirationDate) {
-        this.ID = ID;
-        this.creationDate = creationDate;
-        this.expirationDate = expirationDate;
+    public Survey() {
         personalityQuestions = new String[5];
         interestQuestions = new String[3];
+        initController();
         initializePersonalityQuestions();
         initializeInterestQuestions();
-        controller = new SurveyController();
-        controller.setSurvey(this);
     }
 
     public void initializePersonalityQuestions() {
@@ -40,18 +37,6 @@ public class Survey {
         System.arraycopy(questions, 0, interestQuestions, 0, interestQuestions.length);
     }
 
-    public int getID() {
-        return ID;
-    }
-
-    public LocalDate getCreationDate() {
-        return creationDate;
-    }
-
-    public LocalDate getExpirationDate() {
-        return expirationDate;
-    }
-
     public String[] getPersonalityQuestions() {
         return personalityQuestions;
     }
@@ -62,5 +47,12 @@ public class Survey {
 
     public SurveyController getController() {
         return controller;
+    }
+
+    private void initController() {
+        Scanner scanner = new Scanner(System.in);
+        PersonalityClassifier classifier = new PersonalityClassifier();
+        ExecutorService executorService = Executors.newFixedThreadPool(5);
+        controller = new SurveyController(this, scanner, classifier, executorService);
     }
 }

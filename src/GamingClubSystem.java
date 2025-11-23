@@ -65,53 +65,12 @@ public class GamingClubSystem {
         this.survey = survey;
     }
 
-    public void displayOrganizerMenu(Scanner scanner) {
-        System.out.println("""
-                1: Upload CSV
-                2: Initiate team formation
-                3: Exit""");
-
-        System.out.print("Enter your choice: ");
-        int choice = scanner.nextInt();
-        scanner.nextLine();
-
-        switch (choice) {
-            case 1 -> {
-                organizer.uploadFile();
-            } case 2 -> {
-                organizer.initiateFormation();
-            } case 3 -> {
-
-            } default -> {
-                System.out.println("Invalid choice. Try again");
-            }
-        }
-    }
-
-    public void initiateSurvey(Scanner scanner) {
-        survey.getController().startSurvey(scanner);
+    public void initiateSurvey() throws Exception {
+        survey = new Survey();
+        survey.getController().startSurvey();
     }
 
     public void addOrganizer(String name, String email) {
         this.organizer = new Organizer(name, email);
-    }
-
-    public void displayParticipantMenu(Scanner scanner) {
-        System.out.println("""
-                1: Complete Survey
-                2: Exit""");
-        System.out.print("Enter your choice: ");
-        int choice = scanner.nextInt();
-        scanner.nextLine();
-
-        switch (choice) {
-            case 1 -> {
-                survey.getController().startSurvey(scanner);
-            } case 2 -> {
-
-            } default -> {
-                System.out.println("Invalid choice. Try again");
-            }
-        }
     }
 }

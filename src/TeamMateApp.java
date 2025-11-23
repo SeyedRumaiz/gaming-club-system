@@ -8,8 +8,6 @@ public class TeamMateApp {
     public static void main(String[] args) {
         GamingClubSystem gamingClubSystem = new GamingClubSystem();
         LoginManager loginManager = new LoginManager();
-        Survey survey = new Survey(1, LocalDate.of(2025, 5, 5), LocalDate.now());
-        gamingClubSystem.setSurvey(survey);
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Welcome to Gaming Club System!");
@@ -39,15 +37,36 @@ public class TeamMateApp {
 
                             gamingClubSystem.addOrganizer(name, email);
 
+                            System.out.println("""
+                                 1: Upload CSV
+                                 2: Initiate team formation
+                                 3: Exit""");
+
+                            System.out.print("Enter your choice: ");
+                            int option = scanner.nextInt();
+                            scanner.nextLine();
+
+                            if (option == 1) {
+                                gamingClubSystem.getOrganizer().uploadFile();
+                            } else if (option == 2) {
+                                gamingClubSystem.getOrganizer().initiateFormation();
+                            } else {
+                                return;
+                            }
+
                     } else {
                             System.out.println("Incorrect password!");
                         }
                     } else {
-                        System.out.print("Do you wish to proceed with the survey? (Y/N): ");
+                        System.out.print("Complete survey? (Y/N): ");
                         boolean proceeding = scanner.next().equalsIgnoreCase("Y");
                         scanner.nextLine();
                         if (proceeding) {
-                            gamingClubSystem.initiateSurvey(scanner);
+                            try {
+                                gamingClubSystem.initiateSurvey();
+                            } catch (Exception e) {
+                                System.out.println("Something went wrong: " + e.getMessage());
+                            }
                         }
                     }
                 }
