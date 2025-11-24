@@ -2,18 +2,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GamingClubSystem {
-    private List<Participant> participants =  new ArrayList<>();
-    private List<Team> teams = new ArrayList<>();
+    private List<Participant> participants;
+    private List<Team> teams;
     private Organizer organizer;
     private short teamSize;
     private String password = "admin";
-    private List<Survey> surveys = new ArrayList<>();
-    private FileHandler fileHandler = new FileHandler();
-    private GameRegistry gameRegistry = new GameRegistry();
+    private List<Survey> surveys;
+    private FileHandler fileHandler;
+    private GameRegistry gameRegistry;
     private static GamingClubSystem instance;
 
     private GamingClubSystem() {
-
+        participants = new ArrayList<>();
+        teams = new ArrayList<>();
+        surveys = new ArrayList<>();
+        fileHandler = new FileHandler();
     }
 
     public static synchronized GamingClubSystem getInstance() {
@@ -79,9 +82,5 @@ public class GamingClubSystem {
 
     public void addOrganizer(Organizer organizer) {
         this.organizer = organizer;
-    }
-
-    public void initiateUpload(String path) {
-        organizer.uploadFile(path);
     }
 }

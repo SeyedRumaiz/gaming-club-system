@@ -1,7 +1,6 @@
-import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class Organizer extends Person {
 
@@ -9,43 +8,30 @@ public class Organizer extends Person {
         super(name, email);
     }
 
-    public List<Participant> uploadFile(String path) {
-        try {
-            List<Participant> participants = FileHandler.loadParticipants(path);
-            FileHandler.saveTeams(participants);
-            System.out.println("Upload successful. " + participants.size() + " participants loaded.");
-            return participants;
-        } catch (Exception e) {
-            System.out.println("Upload failed: " + e.getMessage());
-            return null;
-        }
+    public List<Participant> uploadFile(String path) throws IOException {
+        List<Participant> participants = FileHandler.loadParticipants(path);
+        FileHandler.saveTeams(participants);
+        return participants;
     }
 
-    public void defineTeamSize() {
-        System.out.print("Enter team size: ");
-        Scanner scanner = new Scanner(System.in);
-        String line = scanner.nextLine();
+    public boolean initiateFormation(short teamSize) throws IOException {        // If exporting fails, shows false
 
-        if (line.isEmpty()) {
-            System.out.println("Team size cannot be empty.");
-            return;
+        GamingClubSystem system = GamingClubSystem.getInstance();
+
+        system.setTeamSize(teamSize);
+
+        int totalParticipants = system.getParticipants().size();
+        int totalTeams = (int) Math.ceil((double) totalParticipants / teamSize);
+
+        for (int i = 0; i < totalTeams; i++) {
+            system.addTeam(new Team(i+1));
         }
-        try {
-            short teamSize = Short.parseShort(line);
 
-            int totalParticipants = Participant.getTotalParticipants();
-            if (teamSize > totalParticipants) {
-                System.out.println("Team size cannot be greater than the total number of participants.");
-                return;
-            }
-            Team.setSize(teamSize);
-        } catch (NumberFormatException e) {
-            System.out.println("Team size must be an integer.");
-        }
-    }
-
-    public boolean initiateFormation() {        // If exporting fails, shows false
-        defineTeamSize();
+        TeamBuilder builder = new TeamBuilder(new PersonalityStrategy());
+        List<Team> filledTeams = builder.performMatching(system.getTeams());
+        system.getTeams().clear();
+        system.getTeams().addAll(filledTeams);
+        FileHandler.exportToCSV(system.getTeams(), "resources/formed_teams.csv");
         return true;
     }
 }
