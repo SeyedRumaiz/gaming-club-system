@@ -1,13 +1,15 @@
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Team {
     private final int ID;           // Each team is unique and the id cannot be changed
     private static short size;       // Not gonna have alot of team members so short, wont change so final
-    private final Participant[] participants;       // teams cannot be changed
+    private final List<Participant> participants;       // teams cannot be changed
 
     public Team(int ID) {
         this.ID = ID;
-        participants = new Participant[size];
+        participants = new ArrayList<>();
     }
 
     public int getID() {
@@ -23,28 +25,18 @@ public class Team {
     }
 
     public void addParticipant(Participant participant) {
-        for (int i = 0; i < participants.length; i++) {
-            if (participants[i] == null) {
-                participants[i] = participant;
-            }
-        }
+        participants.add(participant);
     }
 
-    public short getNoOfParticipants() {
-        short size = 0;
-        for (int i = 0; i < participants.length; i++) {
-            if (participants[i] != null) {
-                size++;
-            }
-        }
-        return size;
+    public int getNoOfParticipants() {
+        return participants.size();
     }
 
     public boolean isFull() {
         return getNoOfParticipants() == size;
     }
 
-    public Participant[] getParticipants() {
+    public List<Participant> getParticipants() {
         return participants;
     }
 
@@ -55,7 +47,7 @@ public class Team {
                 sum += participant.getInterest().getSkillLevel();
             }
         }
-        return sum / participants.length;
+        return sum / participants.size();
     }
 
     @Override
@@ -64,7 +56,7 @@ public class Team {
                 "ID = " + ID +
                 ", size = " + size +
                 ", name = " +
-                ", participants = " + Arrays.toString(participants) +
+                ", participants = " + participants +
                 ']';
     }
 }

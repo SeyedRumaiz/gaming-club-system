@@ -67,15 +67,42 @@ public final class FileHandler {            // not gonna inherit
 
             // Create participant
             Personality personality = new Personality(personalityScore);
-            PersonalityClassifier.getInstance().classify(personality);
+            personality.setType(personalityType);
             Role role = Role.valueOf(preferredRole.toUpperCase());
             Interest interest = new Interest(preferredGame, role, skillLevel);
             Participant participant = new Participant(name, email, ID);
             participant.setPersonality(personality);
             participant.setInterest(interest);
             participants.add(participant);
+            GamingClubSystem.getInstance().addParticipant(participant);
             line++;
         }
+        System.out.println(participants.size());
+        System.out.println(GamingClubSystem.getInstance().getParticipants());
         return participants;
+    }
+
+    public static void exportToCSV(List<Team> teams, String filePath) throws IOException {
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(filePath));
+            bw.write("TeamID,ParticipantName,Role,Skill,Game,Personality\n");
+            System.out.println(teams);
+
+            // writing each team row by row
+            for (Team team : teams) {
+                for (Participant participant : team.getParticipants()) {
+                    bw.write(team.getID() + "," +
+                            participant.getName() + "," +
+                            participant.getInterest().getRole() + "," +
+                            participant.getInterest().getSkillLevel() + "," +
+                            participant.getInterest().getGame() + "," +
+                            participant.getPersonality().getType() + "\n");
+                }
+            }
+            bw.close();
+        } catch (IOException e) {
+            System.err.println("[FileHandler] Error writing to file: " + e.getMessage());
+        }
+        System.out.println("Teams have been successfully exported to: " + filePath);
     }
 }

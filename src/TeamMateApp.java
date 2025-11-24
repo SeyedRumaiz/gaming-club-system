@@ -1,13 +1,13 @@
+import java.io.IOException;
 import java.util.Scanner;
 
 /**
  * Driver class for team formation and survey processes to begin
  */
 public class TeamMateApp {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         GamingClubSystem gamingClubSystem = GamingClubSystem.getInstance();
         Scanner scanner = new Scanner(System.in);
-
         System.out.println("Welcome to Gaming Club System!");
 
        outer: while (true) {
@@ -33,26 +33,10 @@ public class TeamMateApp {
                             System.out.print("Enter your email: ");
                             String email = scanner.nextLine();
 
-                            gamingClubSystem.addOrganizer(new Organizer(name, email));
-                            while (true) {
-                                System.out.println("""
-                                        1: Upload CSV
-                                        2: Initiate team formation
-                                        3: Exit""");
-
-                                System.out.print("Enter your choice: ");
-                                int option = scanner.nextInt();
-                                scanner.nextLine();
-                                if (option == 1) {
-                                    System.out.print("Enter file path: ");
-                                    String path = scanner.nextLine();
-                                    gamingClubSystem.initiateUpload(path);
-                                } else if (option == 2) {
-                                    gamingClubSystem.getOrganizer().initiateFormation();
-                                } else {
-                                    break;
-                                }
-                            }
+                            Organizer organizer = new Organizer(name, email);
+                            gamingClubSystem.addOrganizer(organizer);
+                            OrganizerController controller = new OrganizerController(organizer);
+                            controller.handleMenu(scanner);
                     } else {
                             System.out.println("Incorrect password!");
                         }

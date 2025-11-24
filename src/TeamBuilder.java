@@ -3,16 +3,15 @@ import java.util.List;
 public class TeamBuilder {
     private MatchingStrategy matchingStrategy;
 
-    public TeamBuilder() {
-
+    public TeamBuilder(MatchingStrategy matchingStrategy) {
+        this.matchingStrategy = matchingStrategy;
     }
 
     public void setMatchingStrategy(MatchingStrategy matchingStrategy) {
         this.matchingStrategy = matchingStrategy;
     }
 
-    public List<Team> performMatching(List<Participant> participants) {
-        List<Team> teams = GamingClubSystem.getInstance().getTeams();
-        return null;
+    public List<Team> performMatching(List<Team> teams) {
+        return matchingStrategy.formTeams(teams, GamingClubSystem.getInstance().getTeamSize());
     }
 }

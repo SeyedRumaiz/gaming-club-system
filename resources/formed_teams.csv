@@ -1,0 +1,101 @@
+TeamID,ParticipantName,Role,Skill,Game,Personality
+1,Participant_1,STRATEGIST,2,Chess,Leader
+1,Participant_61,STRATEGIST,7,CS:GO,Leader
+1,Participant_3,DEFENDER,4,FIFA,Thinker
+1,Participant_63,DEFENDER,8,Chess,Thinker
+1,Participant_2,ATTACKER,5,FIFA,Balanced
+2,Participant_4,SUPPORTER,4,Basketball,Leader
+2,Participant_64,SUPPORTER,6,CS:GO,Leader
+2,Participant_6,STRATEGIST,2,CS:GO,Thinker
+2,Participant_66,STRATEGIST,1,Chess,Thinker
+2,Participant_5,COORDINATOR,9,CS:GO,Balanced
+3,Participant_7,ATTACKER,5,DOTA 2,Leader
+3,Participant_67,ATTACKER,1,Basketball,Leader
+3,Participant_9,SUPPORTER,6,CS:GO,Thinker
+3,Participant_69,SUPPORTER,5,CS:GO,Thinker
+3,Participant_8,DEFENDER,10,Valorant,Balanced
+4,Participant_10,COORDINATOR,5,Valorant,Leader
+4,Participant_70,COORDINATOR,1,Basketball,Leader
+4,Participant_12,ATTACKER,3,DOTA 2,Thinker
+4,Participant_72,ATTACKER,5,DOTA 2,Thinker
+4,Participant_11,STRATEGIST,8,Basketball,Balanced
+5,Participant_13,DEFENDER,4,DOTA 2,Leader
+5,Participant_73,DEFENDER,8,DOTA 2,Leader
+5,Participant_15,COORDINATOR,8,DOTA 2,Thinker
+5,Participant_75,COORDINATOR,8,Valorant,Thinker
+5,Participant_14,SUPPORTER,3,FIFA,Balanced
+6,Participant_16,STRATEGIST,6,CS:GO,Leader
+6,Participant_76,STRATEGIST,7,FIFA,Leader
+6,Participant_18,DEFENDER,3,FIFA,Thinker
+6,Participant_78,DEFENDER,6,FIFA,Thinker
+6,Participant_17,ATTACKER,10,CS:GO,Balanced
+7,Participant_19,SUPPORTER,9,FIFA,Leader
+7,Participant_79,SUPPORTER,5,Chess,Leader
+7,Participant_21,STRATEGIST,4,FIFA,Thinker
+7,Participant_81,STRATEGIST,10,FIFA,Thinker
+7,Participant_20,COORDINATOR,3,Valorant,Balanced
+8,Participant_22,ATTACKER,9,Chess,Leader
+8,Participant_82,ATTACKER,10,Valorant,Leader
+8,Participant_24,SUPPORTER,7,DOTA 2,Thinker
+8,Participant_84,SUPPORTER,5,FIFA,Thinker
+8,Participant_23,DEFENDER,3,CS:GO,Balanced
+9,Participant_25,COORDINATOR,9,FIFA,Leader
+9,Participant_85,COORDINATOR,10,Basketball,Leader
+9,Participant_27,ATTACKER,6,Chess,Thinker
+9,Participant_87,ATTACKER,4,Basketball,Thinker
+9,Participant_26,STRATEGIST,8,Chess,Balanced
+10,Participant_28,DEFENDER,8,CS:GO,Leader
+10,Participant_88,DEFENDER,4,FIFA,Leader
+10,Participant_30,COORDINATOR,4,CS:GO,Thinker
+10,Participant_90,COORDINATOR,5,Chess,Thinker
+10,Participant_29,SUPPORTER,5,Basketball,Balanced
+11,Participant_31,STRATEGIST,8,Basketball,Leader
+11,Participant_91,STRATEGIST,10,FIFA,Leader
+11,Participant_33,DEFENDER,7,FIFA,Thinker
+11,Participant_93,DEFENDER,4,CS:GO,Thinker
+11,Participant_32,ATTACKER,2,DOTA 2,Balanced
+12,Participant_34,SUPPORTER,7,FIFA,Leader
+12,Participant_94,SUPPORTER,2,CS:GO,Leader
+12,Participant_36,STRATEGIST,9,Chess,Thinker
+12,Participant_96,STRATEGIST,8,DOTA 2,Thinker
+12,Participant_35,COORDINATOR,8,Basketball,Balanced
+13,Participant_37,ATTACKER,8,DOTA 2,Leader
+13,Participant_97,ATTACKER,3,FIFA,Leader
+13,Participant_39,SUPPORTER,5,FIFA,Thinker
+13,Participant_99,SUPPORTER,3,Valorant,Thinker
+13,Participant_38,DEFENDER,1,Valorant,Balanced
+14,Participant_40,COORDINATOR,9,Chess,Leader
+14,Participant_100,COORDINATOR,7,CS:GO,Leader
+14,Participant_42,ATTACKER,7,DOTA 2,Thinker
+14,Participant_41,STRATEGIST,5,Basketball,Balanced
+14,Participant_44,SUPPORTER,6,FIFA,Balanced
+15,Participant_43,DEFENDER,2,DOTA 2,Leader
+15,Participant_45,COORDINATOR,2,Chess,Thinker
+15,Participant_47,ATTACKER,10,DOTA 2,Balanced
+15,Participant_50,COORDINATOR,5,Basketball,Balanced
+15,Participant_53,DEFENDER,7,DOTA 2,Balanced
+16,Participant_46,STRATEGIST,5,CS:GO,Leader
+16,Participant_48,DEFENDER,6,Valorant,Thinker
+16,Participant_56,STRATEGIST,4,Basketball,Balanced
+16,Participant_59,SUPPORTER,4,DOTA 2,Balanced
+16,Participant_62,ATTACKER,6,Basketball,Balanced
+17,Participant_49,SUPPORTER,3,Basketball,Leader
+17,Participant_51,STRATEGIST,2,FIFA,Thinker
+17,Participant_65,COORDINATOR,7,DOTA 2,Balanced
+17,Participant_68,DEFENDER,1,Chess,Balanced
+17,Participant_71,STRATEGIST,8,Chess,Balanced
+18,Participant_52,ATTACKER,2,FIFA,Leader
+18,Participant_54,SUPPORTER,8,Valorant,Thinker
+18,Participant_74,SUPPORTER,3,FIFA,Balanced
+18,Participant_77,ATTACKER,2,FIFA,Balanced
+18,Participant_80,COORDINATOR,1,Basketball,Balanced
+19,Participant_55,COORDINATOR,8,Chess,Leader
+19,Participant_57,ATTACKER,7,CS:GO,Thinker
+19,Participant_83,DEFENDER,10,DOTA 2,Balanced
+19,Participant_86,STRATEGIST,9,FIFA,Balanced
+19,Participant_89,SUPPORTER,6,Chess,Balanced
+20,Participant_58,DEFENDER,3,Valorant,Leader
+20,Participant_60,COORDINATOR,4,CS:GO,Thinker
+20,Participant_92,ATTACKER,7,Basketball,Balanced
+20,Participant_95,COORDINATOR,2,CS:GO,Balanced
+20,Participant_98,DEFENDER,5,CS:GO,Balanced
