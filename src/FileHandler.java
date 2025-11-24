@@ -66,7 +66,8 @@ public final class FileHandler {            // not gonna inherit
             String personalityType = row[7];
 
             // Create participant
-            Personality personality = PersonalityClassifier.classify(personalityScore);
+            Personality personality = new Personality(personalityScore);
+            PersonalityClassifier.getInstance().classify(personality);
             Role role = Role.valueOf(preferredRole.toUpperCase());
             Interest interest = new Interest(preferredGame, role, skillLevel);
             Participant participant = new Participant(name, email, ID);

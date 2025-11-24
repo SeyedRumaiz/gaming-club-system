@@ -5,12 +5,12 @@ import java.util.Scanner;
  */
 public class TeamMateApp {
     public static void main(String[] args) {
-        GamingClubSystem gamingClubSystem = new GamingClubSystem();
+        GamingClubSystem gamingClubSystem = GamingClubSystem.getInstance();
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Welcome to Gaming Club System!");
 
-        while (true) {
+       outer: while (true) {
             System.out.println("1: Login");
             System.out.println("2: Exit");
             System.out.print("Please enter your choice: ");
@@ -33,7 +33,7 @@ public class TeamMateApp {
                             System.out.print("Enter your email: ");
                             String email = scanner.nextLine();
 
-                            gamingClubSystem.addOrganizer(name, email);
+                            gamingClubSystem.addOrganizer(new Organizer(name, email));
                             while (true) {
                                 System.out.println("""
                                         1: Upload CSV
@@ -63,7 +63,7 @@ public class TeamMateApp {
                         if (proceeding) {
                             try {
                                 gamingClubSystem.initiateSurvey();
-                                return;
+                                break outer;
                             } catch (Exception e) {
                                 System.out.println("Something went wrong: " + e.getMessage());
                             }

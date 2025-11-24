@@ -1,5 +1,5 @@
 public class Personality {
-    private double score;
+    private final double score;
     private String type;
 
     public Personality(double score) {
@@ -8,10 +8,6 @@ public class Personality {
 
     public double getScore() {
         return score;
-    }
-
-    public void setScore(double score) {
-        this.score = score;
     }
 
     public String getType() {
