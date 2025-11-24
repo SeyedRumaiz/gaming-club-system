@@ -15,4 +15,8 @@ public class GameRegistry {
     public static boolean containsGame(String game) {
         return allowedGames.contains(game);
     }
+
+    public static Set<String> getAllowedGames() {
+        return allowedGames;
+    }
 }

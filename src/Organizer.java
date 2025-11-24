@@ -1,3 +1,6 @@
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Organizer extends Person {
@@ -6,9 +9,16 @@ public class Organizer extends Person {
         super(name, email);
     }
 
-    public boolean uploadFile() {
-        System.out.print("Enter file name: ");
-        return false;
+    public List<Participant> uploadFile(String path) {
+        try {
+            List<Participant> participants = FileHandler.loadParticipants(path);
+            FileHandler.saveTeams(participants);
+            System.out.println("Upload successful. " + participants.size() + " participants loaded.");
+            return participants;
+        } catch (Exception e) {
+            System.out.println("Upload failed: " + e.getMessage());
+            return null;
+        }
     }
 
     public void defineTeamSize() {

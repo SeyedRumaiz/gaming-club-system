@@ -1,6 +1,4 @@
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -9,13 +7,11 @@ import java.util.concurrent.Future;
 public class SurveyController implements Callable<Boolean> {
     private Survey survey;
     private Scanner scanner;
-    private PersonalityClassifier classifier;
     private ExecutorService executor;
 
-    public SurveyController(Survey survey, Scanner scanner, PersonalityClassifier classifier, ExecutorService executor) {
+    public SurveyController(Survey survey, Scanner scanner, ExecutorService executor) {
         this.survey = survey;
         this.scanner = scanner;
-        this.classifier = classifier;
         this.executor = executor;
     }
 
@@ -30,51 +26,64 @@ public class SurveyController implements Callable<Boolean> {
 
         String participantId = "P" + (Participant.getTotalParticipants() + 1);      // Continue from the left off ID
 
-        System.out.print("Enter your name: ");
-        String name = scanner.nextLine().trim();
+        while (true) {
+            System.out.print("Enter your name: ");
+            String name = scanner.nextLine().trim();
 
-        System.out.print("Enter your email: ");
-        String email = scanner.nextLine().trim();
+            System.out.print("Enter your email: ");
+            String email = scanner.nextLine().trim();
 
-        short[] personalityScores = completePersonalityQuestions(scanner);
+            short[] personalityScores = completePersonalityQuestions(scanner);
 
-        Personality personality = new PersonalityClassifier().classify(personalityScores);
-        Interest interest = completeInterestQuestions(scanner);
+            short totalScore = getTotalScore(personalityScores);
 
-        SurveyResponse response = new SurveyResponse(
-                participantId,
-                name,
-                email,
-                interest.getSkillLevel(),
-                interest.getRole(),
-                interest.getGame(),
-                personalityScores
-        );
+            Personality personality = PersonalityClassifier.classify(totalScore);
+            System.out.println("Your personality score is: " + personality.getScore());
+            System.out.println("You are a: " + personality.getType());
+            Interest interest = completeInterestQuestions(scanner);
 
-        SurveyWorker worker = new SurveyWorker(response, executor);
-        Future<Boolean> future = executor.submit(worker);
+            SurveyResponse response = new SurveyResponse(
+                    participantId,
+                    name,
+                    email,
+                    interest.getSkillLevel(),
+                    interest.getRole(),
+                    interest.getGame(),
+                    personalityScores
+            );
 
-        boolean valid;
-        try {
-            valid = future.get();
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
-            return false;
+            SurveyWorker worker = new SurveyWorker(response, executor);
+            Future<Boolean> future = executor.submit(worker);
+
+            boolean valid;
+            try {
+                valid = future.get();
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
+                return false;
+            }
+
+            if (!valid) {
+                System.out.println("Validation failed.");
+                return false;
+            }
+
+            Participant participant = new Participant(participantId, name, email);
+            participant.setInterest(interest);
+            participant.setPersonality(personality);
+            break;
         }
-
-        if (!valid) {
-            System.out.println("Validation failed.");
-            return false;
-        }
-
-        Participant participant = new Participant(participantId, name, email);
-        participant.setInterest(interest);
-        participant.setPersonality(personality);
-        System.out.println("Your personality score is: " + personality.getScore());
-        System.out.println("You are a: " + personality.getType());
 
         System.out.println("Thank you for completing the survey.");
         return true;
+    }
+
+    private short getTotalScore(short[] scores) {
+        short totalScore = 0;
+        for (short score : scores) {
+            totalScore += score;
+        }
+        return totalScore;
     }
 
     private short[] completePersonalityQuestions(Scanner scanner) {
@@ -84,7 +93,7 @@ public class SurveyController implements Callable<Boolean> {
         short[] ratings = new short[personalityQuestions.length];
         try {
             for (int i = 0; i < personalityQuestions.length; i++) {
-                System.out.print("\" " + personalityQuestions[i] + "\" " + ": ");
+                System.out.print("\"" + personalityQuestions[i] + "\" " + ": ");
                 short rating = Short.parseShort(scanner.nextLine());
                 if (rating < 1 || rating > 5)
                     throw new InvalidPersonalityRatingException("Rating must be between 1 and 5.");
@@ -92,6 +101,8 @@ public class SurveyController implements Callable<Boolean> {
             }
         } catch (InvalidPersonalityRatingException e) {
             System.out.println("Error: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.out.println("Please enter a valid number.");
         }
         return ratings;
     }
@@ -99,14 +110,15 @@ public class SurveyController implements Callable<Boolean> {
     private Interest completeInterestQuestions(Scanner scanner) {
         System.out.println("-- Interest questions --");
         System.out.println("Available roles: " + Arrays.toString(Role.values()));
-        System.out.println("What is your preferred role?: ");
+        System.out.print("What is your preferred role?: ");
 
-        Role role = Role.valueOf(scanner.nextLine());
+        Role role = Role.valueOf(scanner.nextLine().toUpperCase().trim());
 
-        System.out.println("What is your preferred game?: ");
+        System.out.println("Available Games: " + GameRegistry.getAllowedGames());
+        System.out.print("What is your preferred game?: ");
 
         String game = scanner.nextLine();
-        System.out.println("What is your skill level?: ");
+        System.out.print("What is your skill level?: ");
 
         short level = Short.parseShort(scanner.nextLine());
 

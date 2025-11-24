@@ -1,4 +1,3 @@
-import java.time.LocalDate;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -51,8 +50,7 @@ public class Survey {
 
     private void initController() {
         Scanner scanner = new Scanner(System.in);
-        PersonalityClassifier classifier = new PersonalityClassifier();
         ExecutorService executorService = Executors.newFixedThreadPool(5);
-        controller = new SurveyController(this, scanner, classifier, executorService);
+        controller = new SurveyController(this, scanner, executorService);
     }
 }

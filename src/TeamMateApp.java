@@ -1,4 +1,3 @@
-import java.time.LocalDate;
 import java.util.Scanner;
 
 /**
@@ -7,26 +6,25 @@ import java.util.Scanner;
 public class TeamMateApp {
     public static void main(String[] args) {
         GamingClubSystem gamingClubSystem = new GamingClubSystem();
-        LoginManager loginManager = new LoginManager();
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Welcome to Gaming Club System!");
-        System.out.println("1: Login");
-        System.out.println("2: Exit");
-        System.out.print("Please enter your choice: ");
 
         while (true) {
+            System.out.println("1: Login");
+            System.out.println("2: Exit");
+            System.out.print("Please enter your choice: ");
             int choice = scanner.nextInt();
 
             switch (choice) {
                 case 1 -> {
-                    System.out.print("Are you the Organizer? (Y/N): ");
+                    System.out.print("Are you the Organizer? (Y - Yes, N - No): ");
                     String answer = scanner.next().toUpperCase();
                     if (answer.equals("Y")) {
                         System.out.print("Enter password: ");
                         scanner.nextLine();
                         String password = scanner.nextLine();
-                        boolean confirmed = loginManager.confirmPassword(password, gamingClubSystem);
+                        boolean confirmed = gamingClubSystem.getPassword().equals(password);
                         if (confirmed) {
                             System.out.print("Successfully logged in!");
                             System.out.println();
@@ -36,34 +34,36 @@ public class TeamMateApp {
                             String email = scanner.nextLine();
 
                             gamingClubSystem.addOrganizer(name, email);
+                            while (true) {
+                                System.out.println("""
+                                        1: Upload CSV
+                                        2: Initiate team formation
+                                        3: Exit""");
 
-                            System.out.println("""
-                                 1: Upload CSV
-                                 2: Initiate team formation
-                                 3: Exit""");
-
-                            System.out.print("Enter your choice: ");
-                            int option = scanner.nextInt();
-                            scanner.nextLine();
-
-                            if (option == 1) {
-                                gamingClubSystem.getOrganizer().uploadFile();
-                            } else if (option == 2) {
-                                gamingClubSystem.getOrganizer().initiateFormation();
-                            } else {
-                                return;
+                                System.out.print("Enter your choice: ");
+                                int option = scanner.nextInt();
+                                scanner.nextLine();
+                                if (option == 1) {
+                                    System.out.print("Enter file path: ");
+                                    String path = scanner.nextLine();
+                                    gamingClubSystem.initiateUpload(path);
+                                } else if (option == 2) {
+                                    gamingClubSystem.getOrganizer().initiateFormation();
+                                } else {
+                                    break;
+                                }
                             }
-
                     } else {
                             System.out.println("Incorrect password!");
                         }
                     } else {
-                        System.out.print("Complete survey? (Y/N): ");
+                        System.out.print("Complete survey? (Y - Yes, N - No): ");
                         boolean proceeding = scanner.next().equalsIgnoreCase("Y");
                         scanner.nextLine();
                         if (proceeding) {
                             try {
                                 gamingClubSystem.initiateSurvey();
+                                return;
                             } catch (Exception e) {
                                 System.out.println("Something went wrong: " + e.getMessage());
                             }

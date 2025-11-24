@@ -1,20 +1,21 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class GamingClubSystem {
     private List<Participant> participants;
     private List<Team> teams;
     private Organizer organizer;
-    private PersonalityClassifier personalityClassifier;
     private short teamSize;
     private String password = "admin";
     private Survey survey;
+    private FileHandler fileHandler;
+    private static GamingClubSystem instance;
 
     public GamingClubSystem() {
         participants = new ArrayList<>();
         teams = new ArrayList<>();
         organizer = null;
+        fileHandler = new FileHandler();
     }
 
     public List<Participant> getParticipants() {
@@ -57,12 +58,12 @@ public class GamingClubSystem {
         this.password = password;
     }
 
-    public PersonalityClassifier getPersonalityClassifier() {
-        return personalityClassifier;
-    }
-
     public void setSurvey(Survey survey) {
         this.survey = survey;
+    }
+
+    public FileHandler getFileHandler() {
+        return fileHandler;
     }
 
     public void initiateSurvey() throws Exception {
@@ -70,7 +71,15 @@ public class GamingClubSystem {
         survey.getController().startSurvey();
     }
 
+    public void addParticipant(Participant participant) {
+        participants.add(participant);
+    }
+
     public void addOrganizer(String name, String email) {
         this.organizer = new Organizer(name, email);
+    }
+
+    public void initiateUpload(String path) {
+        organizer.uploadFile(path);
     }
 }

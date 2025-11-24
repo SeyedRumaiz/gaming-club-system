@@ -11,7 +11,7 @@ public class Validation {
 
     public static boolean validatePersonalityRatings(short[] ratings) {
         for (short rating : ratings) {
-            if (rating < 1 || rating > 5) {
+            if (rating < 4 || rating > 20) {
                 return false;
             }
         }
