@@ -1,20 +1,34 @@
+/**
+ * Class to classify personality based on the score
+ */
 public class PersonalityClassifier {
-    private static short leaderMin = 90;
-    private static  short balancedMin = 70;
-    private static short thinkerMin = 50;
+    private final short leaderMin;
+    private final short balancedMin;
+    private final short thinkerMin;
+    private static PersonalityClassifier instance;
 
-    public static Personality classify(short score) {
+    private PersonalityClassifier() {
+        this.leaderMin = 90;
+        this.balancedMin = 70;
+        this.thinkerMin = 50;
+    }
 
-        Personality personality = new Personality(score);
-        if (score >= leaderMin) {
+    public static PersonalityClassifier getInstance() {
+        if (instance == null) {
+            instance = new PersonalityClassifier();
+        }
+        return instance;
+    }
+
+    public void classify(Personality personality) {
+        if (personality.getScore() >= leaderMin) {
             personality.setType("Leader");
-        } else if (score >= balancedMin) {
+        } else if (personality.getScore() >= balancedMin) {
             personality.setType("Balanced");
-        } else if (score >= thinkerMin) {
+        } else if (personality.getScore() >= thinkerMin) {
             personality.setType("Thinker");
         } else {
             personality.setType("Unknown");
         }
-        return personality;
     }
 }

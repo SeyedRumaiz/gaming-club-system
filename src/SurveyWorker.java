@@ -1,20 +1,18 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 public class SurveyWorker implements Callable<Boolean> {
-    private SurveyResponse response;
-    private ExecutorService executor;
+    private final SurveyResponse response;
 
-    public SurveyWorker(SurveyResponse response, ExecutorService executor) {
+    public SurveyWorker(SurveyResponse response) {
         this.response = response;
-        this.executor = executor;
     }
 
     @Override
     public Boolean call() throws Exception {
+
+        ExecutorService executor = Executors.newFixedThreadPool(4);
 
         List<Callable<Boolean>> tasks = new ArrayList<>();
 

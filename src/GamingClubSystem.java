@@ -2,36 +2,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GamingClubSystem {
-    private List<Participant> participants;
-    private List<Team> teams;
+    private List<Participant> participants =  new ArrayList<>();
+    private List<Team> teams = new ArrayList<>();
     private Organizer organizer;
     private short teamSize;
     private String password = "admin";
-    private Survey survey;
-    private FileHandler fileHandler;
+    private List<Survey> surveys = new ArrayList<>();
+    private FileHandler fileHandler = new FileHandler();
+    private GameRegistry gameRegistry = new GameRegistry();
     private static GamingClubSystem instance;
 
-    public GamingClubSystem() {
-        participants = new ArrayList<>();
-        teams = new ArrayList<>();
-        organizer = null;
-        fileHandler = new FileHandler();
+    private GamingClubSystem() {
+
+    }
+
+    public static synchronized GamingClubSystem getInstance() {
+        if (instance == null) {
+            instance = new GamingClubSystem();
+        }
+        return instance;
     }
 
     public List<Participant> getParticipants() {
         return participants;
     }
 
-    public void setParticipants(List<Participant> participants) {
-        this.participants = participants;
-    }
-
     public List<Team> getTeams() {
         return teams;
-    }
-
-    public void setTeams(List<Team> teams) {
-        this.teams = teams;
     }
 
     public Organizer getOrganizer() {
@@ -58,16 +55,17 @@ public class GamingClubSystem {
         this.password = password;
     }
 
-    public void setSurvey(Survey survey) {
-        this.survey = survey;
-    }
-
     public FileHandler getFileHandler() {
         return fileHandler;
     }
 
+    public GameRegistry getGameRegistry() {
+        return gameRegistry;
+    }
+
     public void initiateSurvey() throws Exception {
-        survey = new Survey();
+        Survey survey = new Survey();
+        surveys.add(survey);
         survey.getController().startSurvey();
     }
 
@@ -75,8 +73,12 @@ public class GamingClubSystem {
         participants.add(participant);
     }
 
-    public void addOrganizer(String name, String email) {
-        this.organizer = new Organizer(name, email);
+    public void addTeam(Team team) {
+        teams.add(team);
+    }
+
+    public void addOrganizer(Organizer organizer) {
+        this.organizer = organizer;
     }
 
     public void initiateUpload(String path) {

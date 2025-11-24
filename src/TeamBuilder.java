@@ -11,7 +11,8 @@ public class TeamBuilder {
         this.matchingStrategy = matchingStrategy;
     }
 
-    public void performMatching(List<Participant> participants) {
-
+    public List<Team> performMatching(List<Participant> participants) {
+        List<Team> teams = GamingClubSystem.getInstance().getTeams();
+        return null;
     }
 }

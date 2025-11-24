@@ -1,10 +1,9 @@
 import java.util.Arrays;
 import java.util.Scanner;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
-public class SurveyController implements Callable<Boolean> {
+public class SurveyController {
     private Survey survey;
     private Scanner scanner;
     private ExecutorService executor;
@@ -16,31 +15,29 @@ public class SurveyController implements Callable<Boolean> {
     }
 
     public void startSurvey() throws Exception {
-        call();
-    }
-
-    @Override
-    public Boolean call() throws Exception {
         System.out.println("--- Welcome to the Survey! ---");
         System.out.println("This should take a couple of minutes...");
 
         String participantId = "P" + (Participant.getTotalParticipants() + 1);      // Continue from the left off ID
 
         while (true) {
-            System.out.print("Enter your name: ");
-            String name = scanner.nextLine().trim();
 
-            System.out.print("Enter your email: ");
-            String email = scanner.nextLine().trim();
+            String name = getName(scanner).trim();
 
-            short[] personalityScores = completePersonalityQuestions(scanner);
+            String email = getEmail(scanner).trim();
+
+            short[] personalityScores = getPersonalityInfo(scanner);
 
             short totalScore = getTotalScore(personalityScores);
 
-            Personality personality = PersonalityClassifier.classify(totalScore);
+            Personality personality = new Personality(totalScore);
+
+            PersonalityClassifier.getInstance().classify(personality);
+
             System.out.println("Your personality score is: " + personality.getScore());
             System.out.println("You are a: " + personality.getType());
-            Interest interest = completeInterestQuestions(scanner);
+
+            Interest interest = getInterestInfo(scanner);
 
             SurveyResponse response = new SurveyResponse(
                     participantId,
@@ -52,7 +49,7 @@ public class SurveyController implements Callable<Boolean> {
                     personalityScores
             );
 
-            SurveyWorker worker = new SurveyWorker(response, executor);
+            SurveyWorker worker = new SurveyWorker(response);
             Future<Boolean> future = executor.submit(worker);
 
             boolean valid;
@@ -60,22 +57,28 @@ public class SurveyController implements Callable<Boolean> {
                 valid = future.get();
             } catch (Exception e) {
                 System.out.println("Error: " + e.getMessage());
-                return false;
+                return;
             }
 
             if (!valid) {
                 System.out.println("Validation failed.");
-                return false;
+                return;
             }
 
             Participant participant = new Participant(participantId, name, email);
             participant.setInterest(interest);
             participant.setPersonality(personality);
+
+            // Finally add them to the system
+            GamingClubSystem.getInstance().addParticipant(participant);
             break;
         }
 
         System.out.println("Thank you for completing the survey.");
-        return true;
+    }
+
+    private boolean isValid(boolean valid) {
+        return valid;
     }
 
     private short getTotalScore(short[] scores) {
@@ -86,7 +89,17 @@ public class SurveyController implements Callable<Boolean> {
         return totalScore;
     }
 
-    private short[] completePersonalityQuestions(Scanner scanner) {
+    private String getName(Scanner scanner) {
+        System.out.print("Enter your name: ");
+        return scanner.nextLine().trim();
+    }
+
+    private String getEmail(Scanner scanner) {
+        System.out.print("Enter your email: ");
+        return scanner.nextLine().trim();
+    }
+
+    private short[] getPersonalityInfo(Scanner scanner) {
         System.out.println("-- Personality questions --");
         System.out.println("Please rate each statement from 1 (Strongly Disagree) to 5 (Strongly Agree):");
         String[] personalityQuestions = survey.getPersonalityQuestions();
@@ -107,8 +120,8 @@ public class SurveyController implements Callable<Boolean> {
         return ratings;
     }
 
-    private Interest completeInterestQuestions(Scanner scanner) {
-        System.out.println("-- Interest questions --");
+    private Interest getInterestInfo(Scanner scanner) {
+        System.out.println("--- Interest questions ---");
         System.out.println("Available roles: " + Arrays.toString(Role.values()));
         System.out.print("What is your preferred role?: ");
 
