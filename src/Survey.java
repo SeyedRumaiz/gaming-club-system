@@ -2,6 +2,9 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * Represents a survey taken by a participant
+ */
 public class Survey {
     private final String[] personalityQuestions;
     private final String[] interestQuestions;

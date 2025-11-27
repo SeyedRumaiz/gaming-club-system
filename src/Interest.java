@@ -1,3 +1,6 @@
+/**
+ * Represents an individual participant's role, gaming or sports interest
+ */
 public class Interest {
     private final String game;
     private final Role role;
@@ -9,6 +12,7 @@ public class Interest {
         this.skillLevel = skillLevel;
     }
 
+    // Getters
     public String getGame() {
         return game;
     }

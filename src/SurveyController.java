@@ -3,6 +3,9 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
+/**
+ * Handles the input and output operations required for a single participant
+ */
 public class SurveyController {
     private Survey survey;
     private Scanner scanner;
@@ -21,82 +24,98 @@ public class SurveyController {
         String participantId = "P" + (Participant.getTotalParticipants() + 1);      // Continue from the left off ID
 
         while (true) {
+            System.out.print("Enter your name: ");
+            String name = scanner.nextLine();
 
-            String name = getName(scanner).trim();
+            System.out.print("Enter your email: ");
+            String email = scanner.nextLine();
 
-            String email = getEmail(scanner).trim();
+            Role preferredRole = null;
+            while (preferredRole == null) {
+                System.out.println("--- Interest questions ---");
+                System.out.println("Available roles: " + Arrays.toString(Role.values()));
+                System.out.print("What is your preferred role?: ");
+
+                preferredRole = parseRole(scanner.nextLine());
+                if (preferredRole == null) {
+                    System.out.println("[SC] Please enter a valid role.");
+                }
+            }
+
+            String game;
+            while (true) {
+                System.out.println("Available Games: " + GameRegistry.getAllowedGames());
+                System.out.print("What is your preferred game?: ");
+                game = scanner.nextLine();
+
+                if (!Validation.validateGame(game)) {
+                    break;
+                }
+            }
+
+            short skillLevel;
+
+            while (true) {
+                System.out.print("What is your skill level?: ");
+                try {
+                    skillLevel = Short.parseShort(scanner.nextLine());
+                    if (!Validation.validateSkillLevel(skillLevel)) {
+                        break;
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid skill level. Please enter a valid number.");
+                }
+            }
+
+            Interest interest = new Interest(game, preferredRole, skillLevel);
 
             short[] personalityScores = getPersonalityInfo(scanner);
-
-            short totalScore = getTotalScore(personalityScores);
-
-            Personality personality = new Personality(totalScore);
-
-            PersonalityClassifier.getInstance().classify(personality);
-
-            System.out.println("Your personality score is: " + personality.getScore());
-            System.out.println("You are a: " + personality.getType());
-
-            Interest interest = getInterestInfo(scanner);
 
             SurveyResponse response = new SurveyResponse(
                     participantId,
                     name,
                     email,
-                    interest.getSkillLevel(),
-                    interest.getRole(),
-                    interest.getGame(),
+                    skillLevel,
+                    preferredRole,
+                    game,
                     personalityScores
             );
 
-            SurveyWorker worker = new SurveyWorker(response);
+            short totalRating = response.getTotalRating();
+
+            Personality personality = new Personality(totalRating);
+
+            PersonalityClassifier.getInstance().classify(personality);
+            System.out.println("Your score is: " + personality.getScore());
+            System.out.println("You are a: " + personality.getType());
+
+            SurveyWorker worker = new SurveyWorker(response, executor);
             Future<Boolean> future = executor.submit(worker);
 
-            boolean valid;
-            try {
-                valid = future.get();
-            } catch (Exception e) {
-                System.out.println("Error: " + e.getMessage());
-                return;
-            }
+            boolean valid = future.get();
 
             if (!valid) {
-                System.out.println("Validation failed.");
+                System.out.println("Survey validation failed.");
                 return;
             }
 
-            Participant participant = new Participant(participantId, name, email);
-            participant.setInterest(interest);
-            participant.setPersonality(personality);
+            Participant participant = new Participant(name, email, participantId, interest, personality);
 
             // Finally add them to the system
             GamingClubSystem.getInstance().addParticipant(participant);
+            FileHandler.saveParticipant(participant);
+            Logger.getInstance().info("Successfully added participant with ID:" + participant.getID());
             break;
         }
-
         System.out.println("Thank you for completing the survey.");
     }
 
-    private boolean isValid(boolean valid) {
-        return valid;
-    }
-
-    private short getTotalScore(short[] scores) {
-        short totalScore = 0;
-        for (short score : scores) {
-            totalScore += score;
+    private Role parseRole(String role) {
+        try {
+            return Role.valueOf(role.toUpperCase().trim());
+        } catch (IllegalArgumentException e) {
+        return null;
         }
-        return totalScore;
-    }
-
-    private String getName(Scanner scanner) {
-        System.out.print("Enter your name: ");
-        return scanner.nextLine().trim();
-    }
-
-    private String getEmail(Scanner scanner) {
-        System.out.print("Enter your email: ");
-        return scanner.nextLine().trim();
     }
 
     private short[] getPersonalityInfo(Scanner scanner) {
@@ -113,28 +132,10 @@ public class SurveyController {
                 ratings[i] = (short) ((short) 4 * rating);
             }
         } catch (InvalidPersonalityRatingException e) {
-            System.out.println("Error: " + e.getMessage());
+            Logger.getInstance().error("Error: " + e.getMessage());
         } catch (NumberFormatException e) {
             System.out.println("Please enter a valid number.");
         }
         return ratings;
-    }
-
-    private Interest getInterestInfo(Scanner scanner) {
-        System.out.println("--- Interest questions ---");
-        System.out.println("Available roles: " + Arrays.toString(Role.values()));
-        System.out.print("What is your preferred role?: ");
-
-        Role role = Role.valueOf(scanner.nextLine().toUpperCase().trim());
-
-        System.out.println("Available Games: " + GameRegistry.getAllowedGames());
-        System.out.print("What is your preferred game?: ");
-
-        String game = scanner.nextLine();
-        System.out.print("What is your skill level?: ");
-
-        short level = Short.parseShort(scanner.nextLine());
-
-        return new Interest(game, role, level);
     }
 }

@@ -2,24 +2,50 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class FileHandler {            // not gonna inherit
+/**
+ * Utility class for file handling operations related to participants and teams
+ */
+public final class FileHandler {            // Will not be inherited
 
+    private static final Logger logger = Logger.getInstance();
+
+    /**
+     * Checks if a file exists at the given file name path
+     * @param fileName the path to the file
+     * @return true if the file exists, false otherwise
+     */
     public static boolean isFileExistent(String fileName) {
         return new File(fileName).exists();
     }
 
+    /**
+     * Checks whether the file has a CSV extension
+     * @param fileName the file name
+     * @return true if the file is a CSV, false otherwise
+     */
     public static boolean isCSV(String fileName) {
         return fileName.toLowerCase().endsWith(".csv");
     }
 
-    public static boolean saveTeams(List<Participant> participants) {
-        return false;
+    /**
+     * Saves a single participant to a single file.
+     * @param participant the participant to save
+     */
+    public static synchronized void saveParticipant(Participant participant) {
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("all_participants.csv"));
+            writer.write(participant.toString());
+            writer.newLine();
+        } catch (IOException e) {
+            logger.error("Error while saving participant: " + e.getMessage());
+        }
     }
 
-    private void saveParticipants(List<Participant> participants) {
-
-    }
-
+    /**
+     * Reads the content of a CSV file
+     * @param fileName the path of the file
+     * @return a list of string arrays;
+     */
     public static List<String[]> readFile(String fileName) {
         List<String[]> rows = new ArrayList<>();
 
@@ -33,19 +59,26 @@ public final class FileHandler {            // not gonna inherit
                 rows.add(fields);
             }
         } catch (IOException e) {
-            System.out.println("Error reading file: " + e.getMessage());
+            logger.error("Error while reading file " + e.getMessage());
         }
         return rows;
     }
 
-    public static List<Participant> loadParticipants(String fileName) throws IOException {
+    /**
+     * Loads participants from a CSV file and store them into the system,
+     * creates participants objects and store them into the system
+     * @param fileName the path of the file
+     * @return a list of participant objects
+     */
+    public static List<Participant> loadParticipants(String fileName) {
 
         if (!isFileExistent(fileName)) {
-            throw new IOException("File not found: " + fileName);
+            logger.error("File not found: " + fileName);
+            System.err.println("File not found: " + fileName);
         }
 
         if (!isCSV(fileName)) {
-            throw new IOException("Invalid file type.");
+            System.err.println("Invalid file type.");
         }
 
         List<String[]> rows = readFile(fileName);
@@ -70,9 +103,7 @@ public final class FileHandler {            // not gonna inherit
             personality.setType(personalityType);
             Role role = Role.valueOf(preferredRole.toUpperCase());
             Interest interest = new Interest(preferredGame, role, skillLevel);
-            Participant participant = new Participant(name, email, ID);
-            participant.setPersonality(personality);
-            participant.setInterest(interest);
+            Participant participant = new Participant(name, ID, email, interest, personality);
             participants.add(participant);
             GamingClubSystem.getInstance().addParticipant(participant);
             line++;
@@ -82,27 +113,26 @@ public final class FileHandler {            // not gonna inherit
         return participants;
     }
 
+    /**
+     * Exports a list of teams to a CSV file, each occupying one row
+     * @param teams the list of teams to export
+     * @param filePath the path to be saved
+     * @throws IOException if an error occurs while writing to the file
+     */
     public static void exportToCSV(List<Team> teams, String filePath) throws IOException {
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(filePath));
-            bw.write("TeamID,ParticipantName,Role,Skill,Game,Personality\n");
+            bw.write("TeamID,ParticipantIds,Roles,Games,Personalities,AverageSkill\n");
             System.out.println(teams);
 
             // writing each team row by row
             for (Team team : teams) {
-                for (Participant participant : team.getParticipants()) {
-                    bw.write(team.getID() + "," +
-                            participant.getName() + "," +
-                            participant.getInterest().getRole() + "," +
-                            participant.getInterest().getSkillLevel() + "," +
-                            participant.getInterest().getGame() + "," +
-                            participant.getPersonality().getType() + "\n");
-                }
+                bw.write(team.toString() + "\n");
             }
             bw.close();
         } catch (IOException e) {
-            System.err.println("[FileHandler] Error writing to file: " + e.getMessage());
+            logger.error("Error while writing file " + e.getMessage());
         }
-        System.out.println("Teams have been successfully exported to: " + filePath);
+        logger.info("Teams have been successfully exported to: " + filePath);
     }
 }

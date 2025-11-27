@@ -1,6 +1,9 @@
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Singleton class that serves as the central system for managing the gaming club
+ */
 public class GamingClubSystem {
     private List<Participant> participants;
     private List<Team> teams;
@@ -8,15 +11,13 @@ public class GamingClubSystem {
     private short teamSize;
     private String password = "admin";
     private List<Survey> surveys;
-    private FileHandler fileHandler;
-    private GameRegistry gameRegistry;
     private static GamingClubSystem instance;
+    private String username = "admin";
 
     private GamingClubSystem() {
         participants = new ArrayList<>();
         teams = new ArrayList<>();
         surveys = new ArrayList<>();
-        fileHandler = new FileHandler();
     }
 
     public static synchronized GamingClubSystem getInstance() {
@@ -58,12 +59,8 @@ public class GamingClubSystem {
         this.password = password;
     }
 
-    public FileHandler getFileHandler() {
-        return fileHandler;
-    }
-
-    public GameRegistry getGameRegistry() {
-        return gameRegistry;
+    public String getUsername() {
+        return username;
     }
 
     public void initiateSurvey() throws Exception {
