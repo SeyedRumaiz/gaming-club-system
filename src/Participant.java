@@ -1,36 +1,45 @@
-public class Participant extends Person {
+/**
+ * To represent an individual participant
+ */
+public class Participant extends User {
     private final String ID;
-    private Interest interest;
+    private final String email;
+    private final Interest interest;
     private Personality personality;
     private static int totalParticipants;
 
-    public Participant(String name, String email, String ID) {
-        super(name, email);
+    public Participant(String name, String ID, String email, Interest interest, Personality personality) {
+        super(name);
         this.ID = ID;
+        this.email = email;
+        this.interest = interest;
+        this.personality = personality;
         totalParticipants++;
-    }
-
-    public Interest getInterest() {
-        return this.interest;
     }
 
     public Personality getPersonality() {
         return this.personality;
     }
 
-    public void setInterest(Interest interest) {
-        this.interest = interest;
-    }
-
-    public void setPersonality(Personality personality) {
-        this.personality = personality;
-    }
-
     public String getID() {
         return this.ID;
     }
 
+    public String getEmail() {
+        return this.email;
+    }
+
     public static int getTotalParticipants() {
         return totalParticipants;
+    }
+
+    public Interest getInterest() {
+        return this.interest;
+    }
+
+    @Override
+    public String toString() {
+        return ID + "," + getInterest().getGame() + "," + getInterest().getRole() + "," +
+                getPersonality().getType() + ",";
     }
 }

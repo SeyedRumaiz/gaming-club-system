@@ -1,3 +1,6 @@
+/**
+ * Represents a participant's personality profile
+ */
 public class Personality {
     private final double score;
     private String type;

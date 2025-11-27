@@ -1,11 +1,14 @@
+/**
+ * Represents all data collected from a single participant's survey response
+ */
 public class SurveyResponse {
     private final String ID;
-    private String name;
-    private String email;
-    private short skillLevel;
-    private Role preferredRole;
-    private String preferredGame;
-    private short[] personalityRatings;
+    private final String name;
+    private final String email;
+    private final short skillLevel;
+    private final Role preferredRole;
+    private final String preferredGame;
+    private final short[] personalityRatings;
 
     public SurveyResponse(String ID, String name, String email, short skillLevel, Role preferredRole, String preferredGame, short[] personalityRatings) {
         this.ID = ID;
@@ -43,5 +46,13 @@ public class SurveyResponse {
 
     public short[] getPersonalityRatings() {
         return personalityRatings;
+    }
+
+    public short getTotalRating() {
+        short total = 0;
+        for (short rating : personalityRatings) {
+            total += rating;
+        }
+        return total;
     }
 }

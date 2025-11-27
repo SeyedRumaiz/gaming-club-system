@@ -1,5 +1,5 @@
 /**
- * Class to classify personality based on the score
+ * Classifies a participant's personality type based non their total personality score
  */
 public class PersonalityClassifier {
     private final short leaderMin;

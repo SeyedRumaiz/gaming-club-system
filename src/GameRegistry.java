@@ -1,6 +1,9 @@
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Maintains the set of allowed games for events in a gaming club
+ */
 public class GameRegistry {
     private static final Set<String> allowedGames = new HashSet<>();        // reference won't be changed
 
@@ -12,6 +15,11 @@ public class GameRegistry {
         allowedGames.add("DOTA 2");
     }
 
+    /**
+     *
+     * @param game The entered game by the participant
+     * @return true if the game exists
+     */
     public static boolean containsGame(String game) {
         return allowedGames.contains(game);
     }
