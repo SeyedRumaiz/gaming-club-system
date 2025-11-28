@@ -28,14 +28,19 @@ public final class FileHandler {            // Will not be inherited
     }
 
     /**
-     * Saves a single participant to a single file.
+     * Saves a single participant to a single file, synchronized to ensure
+     * thread safety for many participants at the same time
      * @param participant the participant to save
      */
     public static synchronized void saveParticipant(Participant participant) {
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("all_participants.csv"));
-            writer.write(participant.toString());
+            BufferedWriter writer = new BufferedWriter(new FileWriter("all_participants.csv", true));
+            if (GamingClubSystem.getInstance().getParticipants().size() == 1) {     // if this is the first participant, add the headers
+                writer.write("ID,Name,Email,PreferredGame,SkillLevel,PreferredRole,PersonalityScore,PersonalityType\n");
+            }
+            writer.write(participant.getDetails());
             writer.newLine();
+            writer.close();
         } catch (IOException e) {
             logger.error("Error while saving participant: " + e.getMessage());
         }
@@ -48,10 +53,8 @@ public final class FileHandler {            // Will not be inherited
      */
     public static List<String[]> readFile(String fileName) {
         List<String[]> rows = new ArrayList<>();
-
         try {
             BufferedReader br = new BufferedReader(new FileReader(fileName));
-
             String line;
             br.readLine();      // skip header portion
             while ((line = br.readLine()) != null) {
@@ -72,19 +75,20 @@ public final class FileHandler {            // Will not be inherited
      */
     public static List<Participant> loadParticipants(String fileName) {
 
-        if (!isFileExistent(fileName)) {
-            logger.error("File not found: " + fileName);
-            System.err.println("File not found: " + fileName);
+        if (!isCSV(fileName)) {
+            System.out.println("Invalid file type.");
+            return null;
         }
 
-        if (!isCSV(fileName)) {
-            System.err.println("Invalid file type.");
+        if (!isFileExistent(fileName)) {
+            logger.error("File not found: " + fileName);
+            return null;
         }
 
         List<String[]> rows = readFile(fileName);
         List<Participant> participants = new ArrayList<>();
 
-        int line = 1;
+        int line = 1;       // skip the header
 
         // Parse the data
         for (String[] row : rows) {
@@ -108,8 +112,7 @@ public final class FileHandler {            // Will not be inherited
             GamingClubSystem.getInstance().addParticipant(participant);
             line++;
         }
-        System.out.println(participants.size());
-        System.out.println(GamingClubSystem.getInstance().getParticipants());
+        logger.info("Loaded " + participants.size() + " participants.");
         return participants;
     }
 
@@ -117,9 +120,8 @@ public final class FileHandler {            // Will not be inherited
      * Exports a list of teams to a CSV file, each occupying one row
      * @param teams the list of teams to export
      * @param filePath the path to be saved
-     * @throws IOException if an error occurs while writing to the file
      */
-    public static void exportToCSV(List<Team> teams, String filePath) throws IOException {
+    public static void exportToCSV(List<Team> teams, String filePath) {
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(filePath));
             bw.write("TeamID,ParticipantIds,Roles,Games,Personalities,AverageSkill\n");

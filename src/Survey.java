@@ -1,3 +1,4 @@
+import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -9,7 +10,7 @@ public class Survey {
     private final String[] personalityQuestions;
     private final String[] interestQuestions;
     private SurveyController controller;
-    private SurveyResponse response;
+    private List<SurveyResponse> responses;
 
     public Survey() {
         personalityQuestions = new String[5];
@@ -40,20 +41,33 @@ public class Survey {
     }
 
     public String[] getPersonalityQuestions() {
-        return personalityQuestions;
+        return this.personalityQuestions;
     }
 
     public String[] getInterestQuestions() {
-        return interestQuestions;
+        return this.interestQuestions;
     }
 
     public SurveyController getController() {
-        return controller;
+        return this.controller;
+    }
+
+    public List<SurveyResponse> getResponses() {
+        return this.responses;
     }
 
     private void initController() {
         Scanner scanner = new Scanner(System.in);
         ExecutorService executorService = Executors.newFixedThreadPool(5);
         controller = new SurveyController(this, scanner, executorService);
+    }
+
+    public SurveyResponse addResponse(String ID, String name, String email,
+                                      short skillLevel,
+                                      Role preferredRole, String preferredGame,
+                                      short[] personalityRatings) {
+        SurveyResponse response = new SurveyResponse(ID, name, email, skillLevel, preferredRole, preferredGame, personalityRatings);
+        responses.add(response);
+        return response;
     }
 }

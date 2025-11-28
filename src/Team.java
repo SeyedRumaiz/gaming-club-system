@@ -67,7 +67,7 @@ public class Team {
         return "( " + roles + ")";
     }
 
-    public String getGame() {
+    public String getGames() {
         String games = "";
         for (Participant participant : participants) {
             games += participant.getInterest().getGame() + " ";
@@ -83,38 +83,9 @@ public class Team {
         return "( " + personalities + ")";
     }
 
-    public int countGame(String game) {
-        int count = 0;
-        for (Participant participant : participants) {
-            if (participant.getInterest().getGame().equals(game)) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    public boolean hasRole(Role role) {
-        for (Participant participant : participants) {
-            if (participant.getInterest().getRole() == role) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public int countPersonality(String personality) {
-        int count = 0;
-        for (Participant participant : participants) {
-            if (participant.getPersonality().getType().equals(personality)) {
-                count++;
-            }
-        }
-        return count;
-    }
-
     @Override
     public String toString() {
         return ID +  "," + getIds() + "," +
-                getRoles() + "," + getGame() + "," + getPersonalities() + "," + getAverageSkill();
+                getRoles() + "," + getGames() + "," + getPersonalities() + "," + getAverageSkill();
     }
 }

@@ -6,10 +6,11 @@ import java.util.Scanner;
  * Driver class for team formation and survey processes to begin
  */
 public class TeamMateApp {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         GamingClubSystem gamingClubSystem = GamingClubSystem.getInstance();
         Scanner scanner = new Scanner(System.in);
         Logger logger = Logger.getInstance();
+        FileHandler.loadParticipants("all_participants.csv");
         System.out.println("Welcome to Gaming Club System!");
         logger.info("System started");
 
@@ -55,7 +56,7 @@ public class TeamMateApp {
                    }
                    case 2 -> {
                        System.out.print("Goodbye.");
-                       return;
+                       System.exit(0);
                    }
                    default -> logger.error("Incorrect choice!");
                }
