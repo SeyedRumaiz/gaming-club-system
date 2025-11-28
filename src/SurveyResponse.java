@@ -1,5 +1,5 @@
 /**
- * Represents all data collected from a single participant's survey response
+ * Represents all the raw data collected from a single participant's survey response
  */
 public class SurveyResponse {
     private final String ID;

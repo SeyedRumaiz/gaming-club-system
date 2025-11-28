@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.*;
 
 /**
@@ -7,38 +5,39 @@ import java.util.concurrent.*;
  */
 public class SurveyWorker implements Callable<Boolean> {
     private final SurveyResponse response;
-    private final ExecutorService executor;
 
-    public SurveyWorker(SurveyResponse response, ExecutorService executor) {
+    /**
+     * Creates a worker task responsible for a single survey's response
+     * @param response the response received and to be processed
+     */
+    public SurveyWorker(SurveyResponse response) {
         this.response = response;
-        this.executor = executor;
     }
 
     @Override
-    public Boolean call() throws Exception {
+    public Boolean call() {
+        Logger logger = Logger.getInstance();
+        try {
+            // Classify
+            short totalRating = response.getTotalRating();
+            Personality personality = new Personality(totalRating);
+            PersonalityClassifier.classify(personality);
 
-        List<Callable<Boolean>> tasks = new ArrayList<>();
+            // Create participant from the response received
+            Interest interest = new Interest(response.getPreferredGame(), response.getPreferredRole(),
+                    response.getSkillLevel());
 
-            // Validate role
-            tasks.add(() -> Validation.validateRole(response.getPreferredRole()));
+            Participant participant = new Participant(response.getName(),
+                    response.getID(), response.getEmail(), interest, personality, response);
 
-            // Validate skill level
-            tasks.add(() -> Validation.validateSkillLevel(response.getSkillLevel()));
+            FileHandler.saveParticipant(participant);   // save the participant to the file
+            GamingClubSystem.getInstance().addParticipant(participant); // add the participant to the system
 
-            // Validate game
-            tasks.add(() -> Validation.validateGame(response.getPreferredGame()));
-
-            //Validate personality scores
-            tasks.add(() -> Validation.validatePersonalityRatings(response.getPersonalityRatings()));
-
-        // Run all validations in parallel
-        List<Future<Boolean>> futures = executor.invokeAll(tasks);
-
-        for (Future<Boolean> future : futures) {
-            if (!future.get()) {
-                return false;       // whole survey fails
-            }
+            logger.info("Processed and added participant: " + participant.getID());
+            return true;
+        } catch (Exception e) {
+            logger.error("Error processing response " + response.getID() + ": " + e.getMessage());
+            return false;
         }
-        return true;
     }
 }

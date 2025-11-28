@@ -12,11 +12,19 @@ public class Logger {
     private final String FILENAME;
     private final DateTimeFormatter FORMATTER;
 
+    /**
+     * Private constructor to prevent direct instantiation
+     * @param filename the filename where the logs will be stored
+     */
     private Logger(String filename) {
         this.FILENAME = filename;
         this.FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     }
 
+    /**
+     * Returns the single shared instance of Logger
+     * @return the singleton instance
+     */
     public static synchronized Logger getInstance() {
         if (instance == null) {
             instance = new Logger("gaming_club_system_logs.txt");
@@ -24,6 +32,11 @@ public class Logger {
         return instance;
     }
 
+    /**
+     * Writes a formatted record into the log file
+     * @param type the type of message ("INFO", "ERROR")
+     * @param message the message to be logged
+     */
     public synchronized void log(String type, String message) {
         String timestamp = LocalDateTime.now().format(FORMATTER);
         String line = String.format("%s | %s | %s", timestamp, type, message);
@@ -37,11 +50,20 @@ public class Logger {
         }
     }
 
+    /**
+     * Logs an error message to the file and prints it
+     * to the console
+     * @param message the message being logged to the file
+     */
     public void error(String message) {
         log("ERROR", message);
         System.err.println("Error: " + message);
     }
 
+    /**
+     * Logs a key information to the log file and prints it
+     * @param message the information being logged to the file
+     */
     public void info(String message) {
         log("INFO", message);
         System.out.println(message);

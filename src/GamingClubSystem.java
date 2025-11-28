@@ -10,9 +10,9 @@ public class GamingClubSystem {
     private Organizer organizer;
     private short teamSize;
     private String password = "admin";
-    private List<Survey> surveys;
-    private static GamingClubSystem instance;
+    private List<Survey> surveys;       // List of surveys the system has
     private String username = "admin";
+    private static GamingClubSystem instance;
 
     private GamingClubSystem() {
         participants = new ArrayList<>();
@@ -20,6 +20,10 @@ public class GamingClubSystem {
         surveys = new ArrayList<>();
     }
 
+    /**
+     * Method to use a single instance for the GamingClubSystem
+     * @return Single gaming club instance
+     */
     public static synchronized GamingClubSystem getInstance() {
         if (instance == null) {
             instance = new GamingClubSystem();
@@ -28,15 +32,15 @@ public class GamingClubSystem {
     }
 
     public List<Participant> getParticipants() {
-        return participants;
+        return this.participants;
     }
 
     public List<Team> getTeams() {
-        return teams;
+        return this.teams;
     }
 
     public Organizer getOrganizer() {
-        return organizer;
+        return this.organizer;
     }
 
     public void setOrganizer(Organizer organizer) {
@@ -44,7 +48,7 @@ public class GamingClubSystem {
     }
 
     public short getTeamSize() {
-        return teamSize;
+        return this.teamSize;
     }
 
     public void setTeamSize(short teamSize) {
@@ -52,31 +56,51 @@ public class GamingClubSystem {
     }
 
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(String password) {  // password can be changed
         this.password = password;
     }
 
     public String getUsername() {
-        return username;
+        return this.username;
     }
 
-    public void initiateSurvey() throws Exception {
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /**
+     * To initiate the survey for participants
+     */
+    public void initiateSurvey() {
         Survey survey = new Survey();
         surveys.add(survey);
         survey.getController().startSurvey();
     }
 
-    public void addParticipant(Participant participant) {
+    /**
+     * To add a participant into the system for team formation
+     * Synchronized to add many participants at the same time
+     * @param participant the participant being added
+     */
+    public synchronized void addParticipant(Participant participant) {
         participants.add(participant);
     }
 
+    /**
+     * To add a team into the system
+     * @param team the team being added
+     */
     public void addTeam(Team team) {
         teams.add(team);
     }
 
+    /**
+     * To add the organizer into the system
+     * @param organizer the organizer added
+     */
     public void addOrganizer(Organizer organizer) {
         this.organizer = organizer;
     }
