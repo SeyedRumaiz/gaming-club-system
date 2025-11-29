@@ -12,7 +12,7 @@ public class Interest {
         this.skillLevel = skillLevel;
     }
 
-    // Getters
+    // getters
     public String getGame() {
         return game;
     }

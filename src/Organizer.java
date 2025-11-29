@@ -1,10 +1,5 @@
-import java.util.ArrayList;
 import java.util.InputMismatchException;
-import java.util.List;
 import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 /**
  * Represents an organizer in the system who can perform team-related operations
@@ -14,13 +9,11 @@ public class Organizer extends User {
     public Organizer(String name) {
         super(name);
     }
-
     /**
      * Allows the organizer to enter the team size for team formation
      * @param scanner to read the team size from the organizer
-     * @return the team size defined
      */
-    public short defineTeamSize(Scanner scanner) {
+    public void defineTeamSize(Scanner scanner) {
         while (true) {
             System.out.print("Enter team size (-1 to exit): ");
             String line = scanner.nextLine();
@@ -38,11 +31,11 @@ public class Organizer extends User {
                     continue;
                 }
                 if (teamSize <= 0) {
-                    return teamSize;
+                    return;
                 }
                 GamingClubSystem.getInstance().setTeamSize(teamSize);         // when the tea size is valid
-                Team.setSize(teamSize);
-                return teamSize;
+                Team.setSize(teamSize); // all teams have this team size
+                return;
             } catch (NumberFormatException e) {
                 System.out.println("Team size must be an integer.");
             }
@@ -68,11 +61,12 @@ public class Organizer extends User {
                     case 1 -> {
                         System.out.print("Enter file path: ");
                         String path = scanner.nextLine();
-                        uploadFile(path);
+                        FileHandler.loadParticipants(path);
                     }
                     case 2 -> {
-                        if (!GamingClubSystem.getInstance().getParticipants().isEmpty()) {
-                            initiateFormation(defineTeamSize(scanner));
+                        if (!GamingClubSystem.getInstance().getParticipants().isEmpty()) {  // if the organizer has uploaded the file
+                            defineTeamSize(scanner);        // first get the team size then form teams
+                            GamingClubSystem.getInstance().initiateFormation();
                         } else {
                             System.out.println("Please load participants first.");
                         }
@@ -89,46 +83,5 @@ public class Organizer extends User {
                 scanner.nextLine();
             }
         }
-    }
-
-    /**
-     * To upload participants into the system
-     * @param path the path where the participants are stored
-     * @return a list of participants loaded
-     */
-    public List<Participant> uploadFile(String path) {
-        List<Participant> participants = FileHandler.loadParticipants(path);
-        return participants;
-    }
-
-    /**
-     * Begins the team formation process forming teams which are saved to
-     * another file
-     * @param teamSize the number of participants required for a team
-     */
-    public void initiateFormation(short teamSize) throws Exception {        // If exporting fails, shows false
-
-        GamingClubSystem system = GamingClubSystem.getInstance();
-        List<Participant> participants = system.getParticipants();
-        int totalTeams = (int) Math.ceil((double) participants.size() / teamSize);
-        double targetAverage = 5;
-
-        ExecutorService executor = Executors.newFixedThreadPool(totalTeams);    // each team gets a thread
-        List<Future<Team>> futures = new ArrayList<>();
-
-        for (int i = 0; i < totalTeams; i++) {
-            List<Participant> chunk = participants.subList(i * teamSize,
-                    Math.min(participants.size(), (i + 1) * teamSize));
-            futures.add(executor.submit(new TeamWorker(2, 3, targetAverage, i+1, chunk)));
-        }
-
-        List<Team> formedTeams = new ArrayList<>();
-        for (Future<Team> future : futures) {
-            formedTeams.add(future.get());
-        }
-
-        executor.shutdown();
-        FileHandler.exportToCSV(formedTeams, "resources/formed_teams.csv");
-        Logger.getInstance().info("Teams formed concurrently.");
     }
 }

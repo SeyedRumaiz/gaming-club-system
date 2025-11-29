@@ -6,7 +6,7 @@ import java.util.List;
  */
 public class Team {
     private final int ID;           // Each team is unique and the id cannot be changed
-    private static short size;       // Not gonna have alot of team members so short, wont change so final
+    private static short size;       // Will not have many participants, and won't change
     private final List<Participant> participants;       // teams cannot be changed
 
     public Team(int ID) {
@@ -26,6 +26,10 @@ public class Team {
         Team.size = size;
     }
 
+    /**
+     * To add a participant to a team if it isn't full
+     * @param participant the participant being added
+     */
     public void addParticipant(Participant participant) {
         if (isFull()) {
             return;
@@ -33,6 +37,10 @@ public class Team {
         participants.add(participant);
     }
 
+    /**
+     * To check if the team is full
+     * @return true if the team is full
+     */
     public boolean isFull() {
         return participants.size() == size;
     }
@@ -41,6 +49,10 @@ public class Team {
         return participants;
     }
 
+    /**
+     * To get the average skill rating for a team
+     * @return the average skill rating
+     */
     public double getAverageSkill() {
         double sum = 0;
         for (Participant participant : participants) {

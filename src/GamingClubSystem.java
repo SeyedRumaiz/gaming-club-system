@@ -1,16 +1,20 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * Singleton class that serves as the central system for managing the gaming club
  */
 public class GamingClubSystem {
-    private List<Participant> participants;
-    private List<Team> teams;
+    private final List<Participant> participants;
+    private final List<Team> teams;
     private Organizer organizer;
     private short teamSize;
     private String password = "admin";
-    private List<Survey> surveys;       // List of surveys the system has
+    private final List<Survey> surveys;       // List of surveys the system has
     private String username = "admin";
     private static GamingClubSystem instance;
 
@@ -103,5 +107,44 @@ public class GamingClubSystem {
      */
     public void addOrganizer(Organizer organizer) {
         this.organizer = organizer;
+    }
+
+    public void initiateFormation() throws InterruptedException, ExecutionException {
+        int totalTeams = (int) Math.ceil((double) participants.size() / teamSize);
+        double targetAverage = 5;
+
+        ExecutorService executor = Executors.newFixedThreadPool(totalTeams);    // each team runs its own thread
+        List<Future<Team>> futureTeams = new ArrayList<>(totalTeams);
+
+
+        // Submit teamworkers
+        for (int i = 0; i< totalTeams; i++) {       // split participants into chunks for each team
+            List<Participant> chunk = participants.subList(
+                    i * teamSize,
+                    Math.min(participants.size(), (i+1) * teamSize));
+
+            BalancedTeamBuilder builder = new BalancedTeamBuilder(
+                    2, 3, targetAverage, new Team(i+1), chunk);
+
+            TeamWorker worker = new TeamWorker(builder);    // wrap builder
+            futureTeams.add(executor.submit(worker));       // submit the worker to the executor
+        }
+
+        // Collect formed teams
+        List<Team> formedTeams = new ArrayList<>(totalTeams);
+        for (Future<Team> futureTeam : futureTeams) {
+            formedTeams.add(futureTeam.get());
+        }
+
+        executor.shutdown();
+
+        // Apply template method
+        BalancedTeamBuilder template = new BalancedTeamBuilder(
+                2, 3, targetAverage, null, participants
+        );
+
+        template.buildTeams(participants, formedTeams);
+        FileHandler.exportToCSV(formedTeams, "resources/formed_teams.csv");
+        Logger.getInstance().info("Teams formed successfully.");
     }
 }
