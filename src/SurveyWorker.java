@@ -5,13 +5,15 @@ import java.util.concurrent.*;
  */
 public class SurveyWorker implements Callable<Boolean> {
     private final SurveyResponse response;
+    private final ExecutorService executor;
 
     /**
      * Creates a worker task responsible for a single survey's response
      * @param response the response received and to be processed
      */
-    public SurveyWorker(SurveyResponse response) {
+    public SurveyWorker(SurveyResponse response, ExecutorService executor) {
         this.response = response;
+        this.executor = executor;
     }
 
     @Override
@@ -19,13 +21,22 @@ public class SurveyWorker implements Callable<Boolean> {
         Logger logger = Logger.getInstance();
         try {
             // Classify
-            short totalRating = response.getTotalRating();
-            Personality personality = new Personality(totalRating);
-            PersonalityClassifier.classify(personality);
+            Future<Personality> personalityFuture = executor.submit(()  -> {
+                short totalRating = response.getTotalRating();
+                Personality personality = new Personality(totalRating);
+                PersonalityClassifier.classify(personality);
+                return personality;
+            });
+
+
+            Future<Interest> interestFuture = executor.submit(() -> {
+                return new Interest(response.getPreferredGame(), response.getPreferredRole(),
+                        response.getSkillLevel());
+            });
 
             // Create participant from the response received
-            Interest interest = new Interest(response.getPreferredGame(), response.getPreferredRole(),
-                    response.getSkillLevel());
+            Personality personality = personalityFuture.get();
+            Interest interest = interestFuture.get();
 
             Participant participant = new Participant(response.getName(),
                     response.getID(), response.getEmail(), interest, personality, response);

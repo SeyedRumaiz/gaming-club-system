@@ -1,4 +1,3 @@
-import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -10,7 +9,7 @@ public class TeamMateApp {
         GamingClubSystem gamingClubSystem = GamingClubSystem.getInstance();
         Scanner scanner = new Scanner(System.in);
         Logger logger = Logger.getInstance();
-        FileHandler.loadParticipants("all_participants.csv");
+       // FileHandler.loadParticipants("all_participants.csv");
         System.out.println("Welcome to Gaming Club System!");
         logger.info("System started");
 
@@ -48,6 +47,7 @@ public class TeamMateApp {
                            if (proceeding) {
                                try {
                                    gamingClubSystem.initiateSurvey();
+                                   System.exit(0);
                                } catch (Exception e) {
                                    logger.error("Something went wrong: " + e.getMessage());
                                }

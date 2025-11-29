@@ -2,11 +2,6 @@
  * Classifies a participant's personality type based on their total personality score
  */
 public class PersonalityClassifier {
-
-    public PersonalityClassifier() {
-
-    }
-
     /**
      * Classifies a participant's personality based on their score
      * @param personality the personality being classified
@@ -21,8 +16,6 @@ public class PersonalityClassifier {
             personality.setType("Balanced");
         } else if (personality.getScore() >= thinkerMin) {
             personality.setType("Thinker");
-        } else {
-            personality.setType("None");
         }
     }
 }

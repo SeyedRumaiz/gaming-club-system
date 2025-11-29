@@ -9,6 +9,15 @@ public class Participant extends User {
     private static int totalParticipants;
     private SurveyResponse surveyResponse;
 
+    /**
+     *
+     * @param name
+     * @param ID
+     * @param email
+     * @param interest
+     * @param personality
+     * @param surveyResponse
+     */
     public Participant(String name, String ID, String email, Interest interest, Personality personality, SurveyResponse surveyResponse) {
         super(name);
         this.ID = ID;

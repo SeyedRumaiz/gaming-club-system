@@ -24,6 +24,10 @@ public class GameRegistry {
         return allowedGames.contains(game);
     }
 
+    /**
+     * To get all the supported games
+     * @return a set of supported games
+     */
     public static Set<String> getAllowedGames() {
         return allowedGames;
     }

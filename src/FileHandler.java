@@ -35,7 +35,7 @@ public final class FileHandler {            // Will not be inherited
     public static synchronized void saveParticipant(Participant participant) {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("all_participants.csv", true));
-            if (GamingClubSystem.getInstance().getParticipants().size() == 1) {     // if this is the first participant, add the headers
+            if (GamingClubSystem.getInstance().getParticipants().isEmpty()) {     // if this is the first participant, add the headers
                 writer.write("ID,Name,Email,PreferredGame,SkillLevel,PreferredRole,PersonalityScore,PersonalityType\n");
             }
             writer.write(participant.getDetails());
@@ -104,12 +104,12 @@ public final class FileHandler {            // Will not be inherited
 
             // Create participant
             Personality personality = new Personality(personalityScore);
-            personality.setType(personalityType);
+            personality.setType(personalityType);   // already in the file
             Role role = Role.valueOf(preferredRole.toUpperCase());
             Interest interest = new Interest(preferredGame, role, skillLevel);
             Participant participant = new Participant(name, ID, email, interest, personality);
             participants.add(participant);
-            GamingClubSystem.getInstance().addParticipant(participant);
+            GamingClubSystem.getInstance().addParticipant(participant); // add to the system
             line++;
         }
         logger.info("Loaded " + participants.size() + " participants.");

@@ -1,6 +1,7 @@
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
@@ -18,8 +19,8 @@ public class SurveyController {
     }
 
     /**
-     *  Method to begin the whole survey process
-     *
+     *  Method to begin the whole survey process and take all inputs from the
+     *  participant
      */
     public void startSurvey() {
         System.out.println("--- Welcome to the Survey! ---");
@@ -81,7 +82,13 @@ public class SurveyController {
                     preferredRole, game, personalityScores);
 
             // Submit this response to the worker
-            SurveyWorker worker = new SurveyWorker(response);
+            SurveyWorker worker = new SurveyWorker(response, executor); // sharing the executor
+
+            if (response.getTotalRating() < 50) {
+                System.out.println("Unfortunately you are not eligible to participate.");
+                return;
+            }
+
             Future<Boolean> future = executor.submit(worker);
 
             boolean futureValid = Validation.validateFuture(future);    //C heck if survey processing is fine
@@ -121,18 +128,16 @@ public class SurveyController {
         System.out.println("Please rate each statement from 1 (Strongly Disagree) to 5 (Strongly Agree):");
         String[] personalityQuestions = survey.getPersonalityQuestions();
         short[] ratings = new short[personalityQuestions.length];
-        try {
-            for (int i = 0; i < personalityQuestions.length; i++) {
-                System.out.print("\"" + personalityQuestions[i] + "\" " + ": ");
-                short rating = Short.parseShort(scanner.nextLine());
-                if (Validation.validateRating(rating)) {
-                    ratings[i] = (short) ((short) 4 * rating);
-                }
+
+        for (int i = 0; i < personalityQuestions.length; i++) {
+            System.out.print("\"" + personalityQuestions[i] + "\" " + ": ");
+            String rating = scanner.nextLine().trim();
+            if (Validation.validateRating(rating)) {
+                short personalityScore = Short.parseShort(rating);
+                ratings[i] = (short) (personalityScore * 4);
+            } else {
+                i -= 1;
             }
-        } catch (InvalidPersonalityRatingException e) {
-            Logger.getInstance().error("Error: " + e.getMessage());
-        } catch (NumberFormatException e) {
-            System.out.println("Please enter a valid number.");
         }
         return ratings;
     }

@@ -48,6 +48,10 @@ public class SurveyResponse {
         return personalityRatings;
     }
 
+    /**
+     * To get the total personality rating for a participant
+     * @return the total rating
+     */
     public short getTotalRating() {
         short total = 0;
         for (short rating : personalityRatings) {

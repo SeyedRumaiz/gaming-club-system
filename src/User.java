@@ -1,7 +1,7 @@
 /**
  * To represent the a User using the system
  */
-public abstract class User {  // not going to make instances of this class, so abstract
+public abstract class User {  // abstract since won't be instantiated
     private String name;
 
     public User(String name) {
