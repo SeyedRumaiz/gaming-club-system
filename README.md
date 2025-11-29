@@ -94,5 +94,5 @@ TeamMate/
 
 ### Installation
 ```bash
-git clone https://github.com/SeyedRumaiz/TeamMate.git
-cd TeamMate
+git clone https://github.com/SeyedRumaiz/gaming-club-system.git
+cd gaming-club-system
