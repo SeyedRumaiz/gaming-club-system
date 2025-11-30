@@ -53,7 +53,7 @@ public class Validation {
                 return false;
             }
         } catch (NumberFormatException e) {
-            System.out.println("Rating must be a number.");
+            System.out.println("Rating must be an integer.");
             return false;
         }
         return true;

@@ -1,7 +1,5 @@
-import java.util.Arrays;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
@@ -18,25 +16,28 @@ public class SurveyController {
         this.executor = executor;
     }
 
+    private void displayShortIntro() {
+        System.out.println("--- Welcome to the Survey! ---");
+        System.out.println("This should take a couple of minutes...");
+    }
+
     /**
      *  Method to begin the whole survey process and take all inputs from the
      *  participant
      */
     public void startSurvey() {
-        System.out.println("--- Welcome to the Survey! ---");
-        System.out.println("This should take a couple of minutes...");
-
+        displayShortIntro();    // seq 1.1.5.1
         String participantId = "P" + (Participant.getTotalParticipants() + 1);      // Continue from the left off ID
 
         // Adding basic details
         while (true) {
-            System.out.print("Enter your name: ");
-            String name = scanner.nextLine();
+            System.out.print("Enter your name: ");  // seq 1.1.5.2
+            String name = scanner.nextLine();   // seq 2
 
-            System.out.print("Enter your email: ");
-            String email = scanner.nextLine();
+            System.out.print("Enter your email: "); // seq 2.1
+            String email = scanner.nextLine();  // seq 3
 
-            if (!Validation.validateEmail(email)) {
+            if (!Validation.validateEmail(email)) { // seq 3.1
                 System.out.println("Invalid email.");
                 continue;
             }
@@ -44,11 +45,11 @@ public class SurveyController {
             // Preferred role
             Role preferredRole = null;
             while (preferredRole == null) {
-                System.out.println("--- Interest questions ---");
-                System.out.println("Available roles: " + Arrays.toString(Role.values()));
-                System.out.print("What is your preferred role?: ");
+                System.out.println("--- Interest questions ---");   // seq 3.2
+                Role.displayAllRoles();     // seq 3.3
+                System.out.print("What is your preferred role?: ");     // seq 3.4
 
-                preferredRole = parseRole(scanner.nextLine());
+                preferredRole = parseRole(scanner.nextLine());  // seq 4
                 if (preferredRole == null) {
                     System.out.println("Please enter a valid role.");
                 } else if (Validation.validateRole(preferredRole)) {
