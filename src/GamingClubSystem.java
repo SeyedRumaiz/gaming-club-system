@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -39,14 +40,6 @@ public class GamingClubSystem {
         return this.participants;
     }
 
-    public List<Team> getTeams() {
-        return this.teams;
-    }
-
-    public Organizer getOrganizer() {
-        return this.organizer;
-    }
-
     public void setOrganizer(Organizer organizer) {
         this.organizer = organizer;
     }
@@ -79,8 +72,9 @@ public class GamingClubSystem {
      * To initiate the survey for participants
      */
     public void initiateSurvey() {
-        Survey survey = new Survey();
-        surveys.add(survey);
+        Survey survey = new Survey();   // seq 1.1.1
+        surveys.add(survey);        // seq 1.1.2
+        // seq 1.1.3 -> 1.1.4 -> 1.1.5
         survey.getController().startSurvey();
     }
 
@@ -113,18 +107,20 @@ public class GamingClubSystem {
         int totalTeams = (int) Math.ceil((double) participants.size() / teamSize);
         double targetAverage = 5;
 
-        ExecutorService executor = Executors.newFixedThreadPool(totalTeams);    // each team runs its own thread
+        // For large datasets, runtime is used
+        ExecutorService executor = Executors.newFixedThreadPool(Math.min(totalTeams, Runtime.getRuntime().availableProcessors()));
+        // each team runs its own thread
         List<Future<Team>> futureTeams = new ArrayList<>(totalTeams);
 
-
+        Collections.shuffle(participants);      // Shuffle to ensure randomness
         // Submit teamworkers
         for (int i = 0; i< totalTeams; i++) {       // split participants into chunks for each team
             List<Participant> chunk = participants.subList(
-                    i * teamSize,
+                    i * teamSize,     // starting index
                     Math.min(participants.size(), (i+1) * teamSize));
 
             BalancedTeamBuilder builder = new BalancedTeamBuilder(
-                    2, 3, targetAverage, new Team(i+1), chunk);
+                    3, 4, targetAverage, new Team(i+1), chunk);
 
             TeamWorker worker = new TeamWorker(builder);    // wrap builder
             futureTeams.add(executor.submit(worker));       // submit the worker to the executor
@@ -133,17 +129,13 @@ public class GamingClubSystem {
         // Collect formed teams
         List<Team> formedTeams = new ArrayList<>(totalTeams);
         for (Future<Team> futureTeam : futureTeams) {
-            formedTeams.add(futureTeam.get());
+            Team team = futureTeam.get();
+            formedTeams.add(team);  // each future returns build team
+            addTeam(team);
         }
 
         executor.shutdown();
 
-        // Apply template method
-        BalancedTeamBuilder template = new BalancedTeamBuilder(
-                2, 3, targetAverage, null, participants
-        );
-
-        template.buildTeams(participants, formedTeams);
         FileHandler.exportToCSV(formedTeams, "resources/formed_teams.csv");
         Logger.getInstance().info("Teams formed successfully.");
     }

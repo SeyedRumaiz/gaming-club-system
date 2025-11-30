@@ -59,9 +59,9 @@ public class Organizer extends User {
 
                 switch (option) {
                     case 1 -> {
-                        System.out.print("Enter file path: ");
-                        String path = scanner.nextLine();
-                        FileHandler.loadParticipants(path);
+                        System.out.print("Enter file name with path: ");  // seq 1
+                        String fileName = scanner.nextLine();   // seq 2
+                        FileHandler.loadParticipants(fileName); // seq 2.1
                     }
                     case 2 -> {
                         if (!GamingClubSystem.getInstance().getParticipants().isEmpty()) {  // if the organizer has uploaded the file

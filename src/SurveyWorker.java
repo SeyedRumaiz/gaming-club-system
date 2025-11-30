@@ -28,7 +28,6 @@ public class SurveyWorker implements Callable<Boolean> {
                 return personality;
             });
 
-
             Future<Interest> interestFuture = executor.submit(() -> {
                 return new Interest(response.getPreferredGame(), response.getPreferredRole(),
                         response.getSkillLevel());

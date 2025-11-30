@@ -71,21 +71,20 @@ public final class FileHandler {            // Will not be inherited
      * Loads participants from a CSV file and store them into the system,
      * creates participants objects and store them into the system
      * @param fileName the path of the file
-     * @return a list of participant objects
      */
-    public static List<Participant> loadParticipants(String fileName) {
+    public static void loadParticipants(String fileName) {
 
-        if (!isCSV(fileName)) {
-            System.out.println("Invalid file type.");
-            return null;
+        if (!isCSV(fileName)) {     // seq 2.1.1
+            System.out.println("Invalid file type.");   // first check if its a CSV, seq 2.1.12
+            return;
         }
 
-        if (!isFileExistent(fileName)) {
-            logger.error("File not found: " + fileName);
-            return null;
+        if (!isFileExistent(fileName)) {    // 2.1.2
+            System.out.println("File not found: " + fileName);  // seq 3
+            return;
         }
 
-        List<String[]> rows = readFile(fileName);
+        List<String[]> rows = readFile(fileName);   // 2.1.3
         List<Participant> participants = new ArrayList<>();
 
         int line = 1;       // skip the header
@@ -103,17 +102,17 @@ public final class FileHandler {            // Will not be inherited
             String personalityType = row[7];
 
             // Create participant
-            Personality personality = new Personality(personalityScore);
-            personality.setType(personalityType);   // already in the file
+            Personality personality = new Personality(personalityScore);    // seq 2.1.4
+            personality.setType(personalityType);   // already in the file, seq 2.1.5
             Role role = Role.valueOf(preferredRole.toUpperCase());
-            Interest interest = new Interest(preferredGame, role, skillLevel);
+            Interest interest = new Interest(preferredGame, role, skillLevel);      // seq 2.1.7
             Participant participant = new Participant(name, ID, email, interest, personality);
             participants.add(participant);
+            // seq 2.1.8 -> 2.1.9 -> 2.1.10
             GamingClubSystem.getInstance().addParticipant(participant); // add to the system
             line++;
         }
-        logger.info("Loaded " + participants.size() + " participants.");
-        return participants;
+        logger.info("Loaded " + participants.size() + " participants.");    // seq 2.1.11
     }
 
     /**
