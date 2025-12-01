@@ -1,4 +1,3 @@
-import java.util.*;
 import java.util.concurrent.*;
 
 /**
@@ -12,7 +11,7 @@ public class TeamWorker implements Callable<Team> {
     }
 
     @Override
-    public Team call() throws InterruptedException, ExecutionException {
+    public Team call() {
         return builder.buildSingleTeam();
     }
 }

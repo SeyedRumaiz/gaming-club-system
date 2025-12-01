@@ -8,34 +8,22 @@ public class BalancedTeamBuilder extends TeamBuilder {
     }
 
     @Override
-    protected Map<String, List<Participant>> applyGameConstraint(List<Participant> pool) {
+    protected Map<String, List<Participant>> groupByGame(List<Participant> pool) {
         Map<String, List<Participant>> gameBuckets = new HashMap<>();   // for parallel computation
 
+        // Group by the preferred game
         for (Participant p : pool) {
             String game = p.getInterest().getGame();
             if (!gameBuckets.containsKey(game)) {
                 gameBuckets.put(game, new ArrayList<>());
             }
-            List<Participant> list = gameBuckets.get(game);
-
-            if (list.size() >= getGAME_CAP()) {
-                game = "OVERFLOW";  // temporary
-                if (!gameBuckets.containsKey(game)) {
-                    gameBuckets.put(game, new ArrayList<>());
-                }
-            }
             gameBuckets.get(game).add(p);
-        }
-
-        // Randomize each bucket
-        for (List<Participant> list : gameBuckets.values()) {
-            Collections.shuffle(list);
         }
         return gameBuckets;
     }
 
     @Override
-    protected Map<Role, List<Participant>> applyRoleConstraint(List<Participant> pool) {
+    protected Map<Role, List<Participant>> groupByRole(List<Participant> pool) {
         Map<Role, List<Participant>> roleBuckets = new HashMap<>();
 
         for (Participant p : pool) {
@@ -45,36 +33,11 @@ public class BalancedTeamBuilder extends TeamBuilder {
             }
             roleBuckets.get(role).add(p);   // add the participant with their role
         }
-
-        // Randomize participants in each role
-        for (List<Participant> list : roleBuckets.values()) {
-            Collections.shuffle(list);
-        }
-
-        Set<Role> addedRoles = new HashSet<>();
-        List<Role> allRoles =  new ArrayList<>(roleBuckets.keySet());
-        Collections.shuffle(allRoles);  // random order for roles
-
-        for (Role role : allRoles) {
-            List<Participant> roleList = roleBuckets.get(role);
-            for (Participant p : roleList) {
-                if (!getTEAM().getParticipants().contains(p) && !getTEAM().isFull()) {
-                    getTEAM().addParticipant(p);
-                    addedRoles.add(role);
-                }
-                if (addedRoles.size() >= getMIN_ROLES()) {
-                    break;      // break when minimum is there
-                }
-            }
-            if (addedRoles.size() >= getMIN_ROLES()) {
-                break;
-            }
-        }
         return roleBuckets;
     }
 
     @Override
-    protected Map<String, List<Participant>> applyPersonalityMix(List<Participant> pool) {
+    protected Map<String, List<Participant>> groupByPersonality(List<Participant> pool) {
         Map<String, List<Participant>> personalityBuckets = new HashMap<>();
         personalityBuckets.put("Leader", new ArrayList<>());
         personalityBuckets.put("Thinker", new ArrayList<>());
@@ -82,17 +45,11 @@ public class BalancedTeamBuilder extends TeamBuilder {
         for (Participant p : pool) {
             personalityBuckets.get(p.getPersonality().getType()).add(p);
         }
-
-        // Randomize each list of participants
-        for (List<Participant> list : personalityBuckets.values()) {
-            Collections.shuffle(list);
-        }
-
         return personalityBuckets;
     }
 
     @Override
-    protected List<Participant> applySkillBalance(List<Participant> pool) {
+    protected List<Participant> distributeSkill(List<Participant> pool) {
         List<Participant> skillSorted = new ArrayList<>(pool);
         skillSorted.sort(Comparator.comparingDouble(p -> Math.abs(p.getInterest().getSkillLevel() - getTARGET_AVERAGE())));
 
@@ -103,7 +60,6 @@ public class BalancedTeamBuilder extends TeamBuilder {
                 Collections.swap(skillSorted, i, i+1);
             }
         }
-
         return skillSorted;
     }
 }

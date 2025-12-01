@@ -37,9 +37,8 @@ public class SurveyController {
             System.out.print("Enter your email: "); // seq 2.1
             String email = scanner.nextLine();  // seq 3
 
-            if (!Validation.validateEmail(email)) { // seq 3.1
-                System.out.println("Invalid email.");
-                continue;
+            if (Validation.validateEmail(email)) { // seq 3.1
+                break;
             }
 
             // Preferred role
@@ -50,49 +49,54 @@ public class SurveyController {
                 System.out.print("What is your preferred role?: ");     // seq 3.4
 
                 preferredRole = parseRole(scanner.nextLine());  // seq 4
-                if (preferredRole == null) {
-                    System.out.println("Please enter a valid role.");
-                } else if (Validation.validateRole(preferredRole)) {
+                if (Validation.validateRole(preferredRole)) {
                     break;
                 }
             }
 
             // Preferred game
-            String game;
-            do {
-                System.out.println("Available Games: " + GameRegistry.getAllowedGames());
+            String preferredGame;
+            while (true) {
+                GameRegistry.displayAllowedGames();
                 System.out.print("What is your preferred game?: ");
-                game = scanner.nextLine().trim();
+                preferredGame = scanner.nextLine().trim();
 
-            } while (!Validation.validateGame(game));
+                if (Validation.validateGame(preferredGame)) {
+                    break;
+                }
+            }
 
             String skillLevel;
 
             // Skill level
-            do {
+            while (true) {
                 System.out.print("What is your skill level?: ");
                 skillLevel = scanner.nextLine().trim();
-            } while (!Validation.validateSkillLevel(skillLevel));
+                if (Validation.validateSkillLevel(skillLevel)) {
+                    break;
+                }
+            }
 
             short skill = Short.parseShort(skillLevel);     // get the valid skill level
 
-            short[] personalityScores = getPersonalityInfo(scanner);    // get the personality scores
+            short[] ratings = getPersonalityInfo(scanner);    // get the personality scores
 
             // Create a response for the participant
             SurveyResponse response = survey.addResponse(participantId, name, email, skill,
-                    preferredRole, game, personalityScores);
+                    preferredRole, preferredGame, ratings); // seq 7.3
 
-            // Submit this response to the worker
-            SurveyWorker worker = new SurveyWorker(response, executor); // sharing the executor
-
+            // Filter participants who don't meet the assumed threshold
             if (response.getTotalRating() < 50) {
                 System.out.println("Unfortunately you are not eligible to participate.");
                 return;
             }
 
+            // Submit this response to the worker, seq 7.4
+            SurveyWorker worker = new SurveyWorker(response); // sharing the executor
+
             Future<Boolean> future = executor.submit(worker);
 
-            boolean futureValid = Validation.validateFuture(future);    //C heck if survey processing is fine
+            boolean futureValid = Validation.validateFuture(future);    // Check if survey processing is fine
 
             if (!futureValid) {
                 return;
@@ -100,7 +104,7 @@ public class SurveyController {
 
             // Finally log the information
             Logger.getInstance().info("Successfully added participant with ID:" + participantId);
-            break;
+            return;
         }
         System.out.println("Thank you for completing the survey.");
     }

@@ -2,6 +2,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * Utility class
  * Maintains the set of allowed games for events in a gaming club
  */
 public class GameRegistry {
@@ -28,7 +29,7 @@ public class GameRegistry {
      * To get all the supported games
      * @return a set of supported games
      */
-    public static Set<String> getAllowedGames() {
-        return allowedGames;
+    public static void displayAllowedGames() {
+        System.out.println("Allowed games: " + allowedGames);
     }
 }

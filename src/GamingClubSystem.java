@@ -1,10 +1,5 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * Singleton class that serves as the central system for managing the gaming club
@@ -96,6 +91,19 @@ public class GamingClubSystem {
     }
 
     /**
+     *
+     * @return
+     */
+    public double getAllParticipantsAverage() {
+        double total = 0;
+        for (Participant participant : participants) {
+            double skill = participant.getInterest().getSkillLevel();
+            total += skill;
+        }
+        return total / participants.size();
+    }
+
+    /**
      * To add the organizer into the system
      * @param organizer the organizer added
      */
@@ -105,19 +113,21 @@ public class GamingClubSystem {
 
     public void initiateFormation() throws InterruptedException, ExecutionException {
         int totalTeams = (int) Math.ceil((double) participants.size() / teamSize);
-        double targetAverage = 5;
+        double targetAverage = getAllParticipantsAverage();
 
         // For large datasets, runtime is used
         ExecutorService executor = Executors.newFixedThreadPool(Math.min(totalTeams, Runtime.getRuntime().availableProcessors()));
         // each team runs its own thread
         List<Future<Team>> futureTeams = new ArrayList<>(totalTeams);
 
-        Collections.shuffle(participants);      // Shuffle to ensure randomness
+        List<Participant> tempParticipants = new ArrayList<>(participants);
+
+        Collections.shuffle(tempParticipants);      // Shuffle to ensure randomness
         // Submit teamworkers
         for (int i = 0; i< totalTeams; i++) {       // split participants into chunks for each team
-            List<Participant> chunk = participants.subList(
+            List<Participant> chunk = tempParticipants.subList(
                     i * teamSize,     // starting index
-                    Math.min(participants.size(), (i+1) * teamSize));
+                    Math.min(tempParticipants.size(), (i+1) * teamSize));
 
             BalancedTeamBuilder builder = new BalancedTeamBuilder(
                     3, 4, targetAverage, new Team(i+1), chunk);
