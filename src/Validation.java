@@ -12,9 +12,6 @@ public class Validation {
         if (!Arrays.asList(Role.values()).contains(role)) {
             System.out.println("Please enter a valid role.");
             return false;
-        } else if (role == null) {
-            System.out.println("Please enter a role.");
-            return false;
         }
         return true;
     }
@@ -82,7 +79,11 @@ public class Validation {
                 Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
                 Pattern.CASE_INSENSITIVE);
         Matcher matcher = EMAIL_REGEX.matcher(email);
-        return matcher.matches();
+        if (!matcher.matches()) {
+            System.out.println("Invalid email address.");
+            return false;
+        }
+        return true;
     }
 
     /**

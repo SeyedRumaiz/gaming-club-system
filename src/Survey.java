@@ -73,9 +73,10 @@ public class Survey {
     public SurveyResponse addResponse(String ID, String name, String email,
                                       short skillLevel,
                                       Role preferredRole, String preferredGame,
-                                      short[] personalityRatings) {
-        SurveyResponse response = new SurveyResponse(ID, name, email, skillLevel, preferredRole, preferredGame, personalityRatings);
+                                      short[] ratings) {
+        // seq 7.3.1
+        SurveyResponse response = new SurveyResponse(ID, name, email, skillLevel, preferredRole, preferredGame, ratings);
         responses.add(response);
-        return response;
+        return response;    // seq 7.3.2
     }
 }
