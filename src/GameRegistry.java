@@ -26,8 +26,8 @@ public class GameRegistry {
     }
 
     /**
-     * To get all the supported games
-     * @return a set of supported games
+     * To view all the supported games when the participant
+     * takes the survey
      */
     public static void displayAllowedGames() {
         System.out.println("Allowed games: " + allowedGames);

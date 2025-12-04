@@ -41,9 +41,9 @@ public class Survey {
      */
     public void initializeInterestQuestions() {
         String[] questions = {
-                "Preferred role",
-                "Preferred game",
-                "Skill level (1–10)"
+                "What is your preferred role?: ",
+                "What is your preferred game?: ",
+                "What is your skill level? (1-10): "
         };
         System.arraycopy(questions, 0, interestQuestions, 0, interestQuestions.length);
     }
@@ -64,12 +64,26 @@ public class Survey {
         return this.responses;
     }
 
+    /**
+     * To instantiate the controller for a given survey
+     */
     private void initController() {
         Scanner scanner = new Scanner(System.in);
         ExecutorService executorService = Executors.newFixedThreadPool(100);
         controller = new SurveyController(this, scanner, executorService);
     }
 
+    /**
+     * To add a participant's response for a given survey
+     * @param ID the id of the participant
+     * @param name the name of the participant
+     * @param email the email of the participant
+     * @param skillLevel the skill level of the participant
+     * @param preferredRole the preferred role for a participant
+     * @param preferredGame the preferred game for a participant
+     * @param ratings the personality ratings provided by a participant
+     * @return a response encapsulating all the fields
+     */
     public SurveyResponse addResponse(String ID, String name, String email,
                                       short skillLevel,
                                       Role preferredRole, String preferredGame,

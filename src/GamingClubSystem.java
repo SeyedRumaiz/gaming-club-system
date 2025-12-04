@@ -1,5 +1,6 @@
+import java.text.CollationElementIterator;
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Singleton class that serves as the central system for managing the gaming club
@@ -8,16 +9,17 @@ public class GamingClubSystem {
     private final List<Participant> participants;
     private final List<Team> teams;
     private Organizer organizer;
-    private short teamSize;
     private String password = "admin";
     private final List<Survey> surveys;       // List of surveys the system has
     private String username = "admin";
     private static GamingClubSystem instance;
+    private int idCounter;
 
     private GamingClubSystem() {
-        participants = new ArrayList<>();
+        participants = Collections.synchronizedList(new ArrayList<>());
         teams = new ArrayList<>();
         surveys = new ArrayList<>();
+        idCounter = 0;
     }
 
     /**
@@ -39,14 +41,6 @@ public class GamingClubSystem {
         this.organizer = organizer;
     }
 
-    public short getTeamSize() {
-        return this.teamSize;
-    }
-
-    public void setTeamSize(short teamSize) {
-        this.teamSize = teamSize;
-    }
-
     public String getPassword() {
         return this.password;
     }
@@ -66,7 +60,7 @@ public class GamingClubSystem {
     /**
      * To initiate the survey for participants
      */
-    public void initiateSurvey() {
+    public void initiateSurvey() throws ExecutionException, InterruptedException {
         Survey survey = new Survey();   // seq 1.1.1
         surveys.add(survey);        // seq 1.1.2
         // seq 1.1.3 -> 1.1.4 -> 1.1.5
@@ -86,13 +80,25 @@ public class GamingClubSystem {
      * To add a team into the system
      * @param team the team being added
      */
-    public void addTeam(Team team) {
+    public synchronized void addTeam(Team team) {       // many threads can access
         teams.add(team);
     }
 
+    public List<Team> getTeams() {
+        return this.teams;
+    }
+
+    public int getIdCounter() {
+        return this.idCounter;
+    }
+    public void setIdCounter(int idCounter) {
+        this.idCounter = idCounter;
+    }
+
     /**
-     *
-     * @return
+     * To get the centered average of all participants for
+     * better balance between teams in terms of their skill level
+     * @return the average skill rating of all participants
      */
     public double getAllParticipantsAverage() {
         double total = 0;
@@ -103,6 +109,11 @@ public class GamingClubSystem {
         return total / participants.size();
     }
 
+    public synchronized String generateId() {
+        idCounter++;
+        return "P" + String.format("%03d", idCounter);  // format the ID
+    }
+
     /**
      * To add the organizer into the system
      * @param organizer the organizer added
@@ -111,42 +122,19 @@ public class GamingClubSystem {
         this.organizer = organizer;
     }
 
-    public void initiateFormation() throws InterruptedException, ExecutionException {
-        int totalTeams = (int) Math.ceil((double) participants.size() / teamSize);
-        double targetAverage = getAllParticipantsAverage();
+    /**
+     * To begin the process of forming teams and get exported
+     * to a file for the Organizer to view
+     */
+    public void initiateFormation() {
+        try {
+            MatchingStrategy builder = new BalancedStrategy();
+            List<Team> formedTeams = builder.buildTeams(participants, Team.getSize());
 
-        // For large datasets, runtime is used
-        ExecutorService executor = Executors.newFixedThreadPool(Math.min(totalTeams, Runtime.getRuntime().availableProcessors()));
-        // each team runs its own thread
-        List<Future<Team>> futureTeams = new ArrayList<>(totalTeams);
-
-        List<Participant> tempParticipants = new ArrayList<>(participants);
-
-        Collections.shuffle(tempParticipants);      // Shuffle to ensure randomness
-        // Submit teamworkers
-        for (int i = 0; i< totalTeams; i++) {       // split participants into chunks for each team
-            List<Participant> chunk = tempParticipants.subList(
-                    i * teamSize,     // starting index
-                    Math.min(tempParticipants.size(), (i+1) * teamSize));
-
-            BalancedTeamBuilder builder = new BalancedTeamBuilder(
-                    3, 4, targetAverage, new Team(i+1), chunk);
-
-            TeamWorker worker = new TeamWorker(builder);    // wrap builder
-            futureTeams.add(executor.submit(worker));       // submit the worker to the executor
+            FileHandler.exportToCSV(formedTeams, "resources/formed_teams.csv");
+            Logger.getInstance().info("Teams formed successfully.");
+        } catch (ExecutionException | InterruptedException e) {
+            Logger.getInstance().error("Error: " + e.getMessage());
         }
-
-        // Collect formed teams
-        List<Team> formedTeams = new ArrayList<>(totalTeams);
-        for (Future<Team> futureTeam : futureTeams) {
-            Team team = futureTeam.get();
-            formedTeams.add(team);  // each future returns build team
-            addTeam(team);
-        }
-
-        executor.shutdown();
-
-        FileHandler.exportToCSV(formedTeams, "resources/formed_teams.csv");
-        Logger.getInstance().info("Teams formed successfully.");
     }
 }
