@@ -15,10 +15,10 @@ public class Team {
     }
 
     public int getID() {
-        return ID;
+        return this.ID;
     }
 
-    public short getSize() {
+    public static short getSize() {
         return size;
     }
 

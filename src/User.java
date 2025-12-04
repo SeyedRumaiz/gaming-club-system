@@ -1,5 +1,5 @@
 /**
- * To represent the a User using the system
+ * To represent the User using the system
  */
 public abstract class User {  // abstract since won't be instantiated
     private String name;

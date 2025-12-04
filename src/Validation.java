@@ -95,11 +95,40 @@ public class Validation {
         try {
             boolean complete = future.get();
             if (!complete) {
-                System.out.println("Survey processing failed.");
+                System.out.println("Processing failed.");
                 return false;
             }
         } catch (InterruptedException | ExecutionException e) {
             Logger.getInstance().error("Processing error: " + e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Used to validate the given team size from the Organizer
+     * @param teamSize the team size being validated
+     * @return true if the team size is valid
+     */
+    public static boolean validateTeamSize(String teamSize) {
+        if (teamSize.isEmpty()) {
+            System.out.println("Team size cannot be empty.");
+            return false;
+        }
+        try {
+            short size = Short.parseShort(teamSize);
+
+            int totalParticipants = Participant.getTotalParticipants();
+            if (size > totalParticipants) {
+                System.out.println("Team size cannot be greater than the total number of participants. Please enter a smaller team size.");
+                return false;
+            }
+            if (size <= 0) {
+                System.out.println("Team size must be greater than zero.");
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Team size must be an integer.");
             return false;
         }
         return true;
