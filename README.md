@@ -62,7 +62,8 @@ TeamMate/
 ├── resources/
 │   └── participants_sample.csv      # Sample input
 ├── src/
-│   ├── BalancedTeamBuilder.java
+│   ├── BalancedStrategy.java
+│   ├── BalancedTeamWorker.java
 │   ├── FileHandler.java
 │   ├── GameRegistry.java
 │   ├── GamingClubSystem.java
@@ -78,9 +79,7 @@ TeamMate/
 │   ├── SurveyResponse.java
 │   ├── SurveyWorker.java
 │   ├── Team.java
-│   ├── TeamBuilderTemplate.java
 │   ├── TeamMateApp.java              # Main entry point
-│   ├── TeamWorker.java
 │   ├── User.java
 │   └── Validation.java
 └── .gitignore
