@@ -69,6 +69,7 @@ TeamMate/
 │   ├── GamingClubSystem.java
 │   ├── Interest.java
 │   ├── Logger.java
+│   ├── MatchingStrategy.java
 │   ├── Organizer.java
 │   ├── Participant.java
 │   ├── Personality.java
