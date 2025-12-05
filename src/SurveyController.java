@@ -112,7 +112,7 @@ public class SurveyController {
         }
 
         // Submit this response to the worker
-        SurveyWorker worker = new SurveyWorker(response); // sharing the executor, seq 1.1.4.18
+        SurveyWorker worker = new SurveyWorker(response); // sharing the executor, seq 1.1.4.17
 
         Future<Boolean> future = executor.submit(worker);
 
@@ -122,7 +122,7 @@ public class SurveyController {
             return;
         }
 
-        // Finally log the information, seq 1.1.4.19
+        // Finally log the information, seq 1.1.4.18
         Logger.getInstance().info("Successfully added participant with ID:" + participantId);
         System.out.println("Thank you for completing the survey.");
     }
@@ -149,7 +149,7 @@ public class SurveyController {
     private short[] getPersonalityInfo(Scanner scanner) {
         System.out.println("-- Personality questions --");
         System.out.println("Please rate each statement from 1 (Strongly Disagree) to 5 (Strongly Agree):");
-        String[] personalityQuestions = survey.getPersonalityQuestions();
+        String[] personalityQuestions = survey.getPersonalityQuestions();   // seq 2
         short[] ratings = new short[personalityQuestions.length];
 
         for (int i = 0; i < personalityQuestions.length; i++) {
@@ -162,6 +162,6 @@ public class SurveyController {
                 i -= 1;
             }
         }
-        return ratings;
+        return ratings; // seq 1.1.4.11
     }
 }
