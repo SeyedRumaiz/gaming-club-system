@@ -9,7 +9,7 @@ public class Personality {
         this.score = score;
     }
 
-    public double getScore() {
+    public double getSCORE() {
         return score;
     }
 

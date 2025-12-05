@@ -19,7 +19,7 @@ public class Team {
     }
 
     public static short getSize() {
-        return size;
+        return size;    // seq 2.3
     }
 
     public static void setSize(short size) {

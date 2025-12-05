@@ -16,6 +16,9 @@ public class SurveyController {
         this.executor = executor;
     }
 
+    /**
+     * To display a short introduction
+     */
     private void displayShortIntro() {
         System.out.println("--- Welcome to the Survey! ---");
         System.out.println("This should take a couple of minutes...");
@@ -26,36 +29,43 @@ public class SurveyController {
      *  participant
      */
     public void startSurvey() {
-        displayShortIntro();    // seq 1.1.5.1
-        GamingClubSystem gamingClubSystem = GamingClubSystem.getInstance();
+        displayShortIntro();    // seq 1.1.4.1
+        GamingClubSystem gamingClubSystem = GamingClubSystem.getInstance();   // seq 1.1.4.2, seq 1.1.4.3
 
         // Continue from the left off ID
-        String participantId = gamingClubSystem.generateId();
+        String participantId = gamingClubSystem.generateId();   // seq 1.1.4.4
 
         // Adding basic details
         String name;
         String email;
         while (true) {
-            System.out.print("Enter your name: ");  // seq 1.1.5.2
-            name = scanner.nextLine();   // seq 2
+            System.out.print("Enter your name: ");
+            name = scanner.nextLine();
 
-            System.out.print("Enter your email: "); // seq 2.1
-            email = scanner.nextLine();  // seq 3
-
-            if (Validation.validateEmail(email)) { // seq 3.1
+            if (Validation.validateName(name)) {
                 break;
             }
         }
+
+        while (true) {
+            System.out.print("Enter your email: ");
+            email = scanner.nextLine();
+
+            if (Validation.validateEmail(email)) {
+                break;
+            }
+        }
+
         String[] interestQuestions = survey.getInterestQuestions();
         // Preferred role
         Role preferredRole = null;
         while (preferredRole == null) {
-            System.out.println("--- Interest questions ---");   // seq 3.2
-            Role.displayAllRoles();     // seq 3.3
+            System.out.println("--- Interest questions ---");
+            Role.displayAllRoles();     // seq 1.1.4.6
             String preferredRoleQuestion = interestQuestions[0];
-            System.out.print(preferredRoleQuestion);     // seq 3.4
+            System.out.print(preferredRoleQuestion);
 
-            preferredRole = parseRole(scanner.nextLine());  // seq 4
+            preferredRole = parseRole(scanner.nextLine());  // seq 1.1.4.7
             if (Validation.validateRole(preferredRole)) {
                 break;
             }
@@ -64,7 +74,7 @@ public class SurveyController {
         // Preferred game
         String preferredGame;
         while (true) {
-            GameRegistry.displayAllowedGames();
+            GameRegistry.displayAllowedGames(); // seq 1.1.4.9
             String preferredGameQuestion = interestQuestions[1];
             System.out.print(preferredGameQuestion);
             preferredGame = scanner.nextLine().trim();
@@ -88,11 +98,11 @@ public class SurveyController {
 
         short skill = Short.parseShort(skillLevel);     // get the valid skill level
 
-        short[] ratings = getPersonalityInfo(scanner);    // get the personality scores
+        short[] ratings = getPersonalityInfo(scanner);    // get the personality scores, seq 1.1.4.10
 
         // Create a response for the participant
         SurveyResponse response = survey.addResponse(participantId, name, email, skill,
-                preferredRole, preferredGame, ratings);                                 // seq 7.3
+                preferredRole, preferredGame, ratings);
 
         // Filter participants who don't meet the assumed threshold
         if (response.getTotalRating() < 50) {
@@ -101,8 +111,8 @@ public class SurveyController {
             return;
         }
 
-        // Submit this response to the worker, seq 7.4
-        SurveyWorker worker = new SurveyWorker(response); // sharing the executor
+        // Submit this response to the worker
+        SurveyWorker worker = new SurveyWorker(response); // sharing the executor, seq 1.1.4.18
 
         Future<Boolean> future = executor.submit(worker);
 
@@ -112,7 +122,7 @@ public class SurveyController {
             return;
         }
 
-        // Finally log the information
+        // Finally log the information, seq 1.1.4.19
         Logger.getInstance().info("Successfully added participant with ID:" + participantId);
         System.out.println("Thank you for completing the survey.");
     }
@@ -124,7 +134,7 @@ public class SurveyController {
      */
     private Role parseRole(String role) {
         try {
-            return Role.valueOf(role.toUpperCase().trim());
+            return Role.valueOf(role.toUpperCase().trim()); // seq 1.1.4.8
         } catch (IllegalArgumentException e) {
         return null;
         }

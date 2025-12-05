@@ -12,13 +12,13 @@ public class Organizer extends User {
      * @param fileName path of the file being uploaded
      */
     public void uploadFile(String fileName) {
-        FileHandler.loadParticipants(fileName);
+        FileHandler.loadParticipants(fileName); // seq 1.1.1
     }
 
     /**
      * To allow the Organizer to initiate ethe team formation process
      */
     public void initiateTeamFormation() {
-        GamingClubSystem.getInstance().initiateFormation();
+        GamingClubSystem.getInstance().initiateFormation(); // seq 2
     }
 }

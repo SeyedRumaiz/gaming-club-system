@@ -10,11 +10,11 @@ public class PersonalityClassifier {
         short leaderMin = 90;
         short balancedMin = 70;
         short thinkerMin = 50;
-        if (personality.getScore() >= leaderMin) {
+        if (personality.getSCORE() >= leaderMin) {
             personality.setType("Leader");
-        } else if (personality.getScore() >= balancedMin) {
+        } else if (personality.getSCORE() >= balancedMin) {
             personality.setType("Balanced");
-        } else if (personality.getScore() >= thinkerMin) {
+        } else if (personality.getSCORE() >= thinkerMin) {
             personality.setType("Thinker");
         }
     }

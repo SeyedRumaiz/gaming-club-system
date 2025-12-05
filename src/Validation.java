@@ -5,7 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * To validate the participants inputs
+ * Utility class to validate the participants inputs
  */
 public class Validation {
     public static boolean validateRole(Role role) {
@@ -129,6 +129,19 @@ public class Validation {
             }
         } catch (NumberFormatException e) {
             System.out.println("Team size must be an integer.");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * To validate the entered name from a participant
+     * @param name the participant's name
+     * @return true if the name is not empty
+     */
+    public static boolean validateName(String name) {
+        if (name.isEmpty()) {
+            System.out.println("Name cannot be empty.");
             return false;
         }
         return true;
