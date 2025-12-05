@@ -65,7 +65,7 @@ public final class FileHandler {            // Will not be inherited
         } catch (IOException e) {
             logger.error("Error while reading file " + e.getMessage());
         }
-        return rows;
+        return rows;    // seq 1.1.1.10
     }
 
     /**
@@ -75,17 +75,17 @@ public final class FileHandler {            // Will not be inherited
      */
     public static void loadParticipants(String fileName) {
 
-        if (!isCSV(fileName)) {     // seq 2.1.1
-            System.out.println("Invalid file type.");   // first check if its a CSV, seq 2.1.12
-            return;
+        if (!isCSV(fileName)) {     // seq 1.1.1.1
+            System.out.println("Invalid file type.");   // first check if its a CSV
+            return; // seq 1.1.1.4
         }
 
-        if (!isFileExistent(fileName)) {    // 2.1.2
+        if (!isFileExistent(fileName)) {    // 1.1.1.5
             System.out.println("File not found: " + fileName);  // seq 3
-            return;
+            return; // seq 1.1.1.7
         }
 
-        List<String[]> rows = readFile(fileName);   // 2.1.3
+        List<String[]> rows = readFile(fileName);   // 1.1.1.9
         List<Participant> participants = new ArrayList<>();
 
         int line = 1;       // skip the header
@@ -103,17 +103,17 @@ public final class FileHandler {            // Will not be inherited
             String personalityType = row[7];
 
             // Create participant
-            Personality personality = new Personality(personalityScore);    // seq 2.1.4
-            personality.setType(personalityType);   // already in the file, seq 2.1.5
-            Role role = Role.valueOf(preferredRole.toUpperCase());
-            Interest interest = new Interest(preferredGame, role, skillLevel);      // seq 2.1.7
-            Participant participant = new Participant(name, ID, email, interest, personality);
+            Personality personality = new Personality(personalityScore);    // seq 1.1.1.11
+            personality.setType(personalityType); // seq 1.1.1.12
+            Role role = Role.valueOf(preferredRole.toUpperCase());  // seq 1.1.1.3
+            Interest interest = new Interest(preferredGame, role, skillLevel);  // seq 1.1.1.14
+            Participant participant = new Participant(name, ID, email, interest, personality);  // seq 1.1.1.15
             participants.add(participant);
-            // seq 2.1.8 -> 2.1.9 -> 2.1.10
+            // seq 1.1.1.16 -> seq 1.1.1.17 -> seq 1.1.1.18
             GamingClubSystem.getInstance().addParticipant(participant); // add to the system
             line++;
         }
-        logger.info("Successfully loaded " + participants.size() + " participants!");    // seq 2.1.11
+        logger.info("Successfully loaded " + participants.size() + " participants!");    // seq 1.1.1.19
     }
 
     /**
@@ -125,7 +125,6 @@ public final class FileHandler {            // Will not be inherited
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(filePath));
             bw.write("TeamID,ParticipantIds,Roles,Games,Personalities,AverageSkill\n");
-            System.out.println(teams);
 
             // writing each team row by row
             for (Team team : teams) {

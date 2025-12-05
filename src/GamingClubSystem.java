@@ -1,4 +1,3 @@
-import java.text.CollationElementIterator;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
@@ -37,8 +36,8 @@ public class GamingClubSystem {
         return this.participants;
     }
 
-    public void setOrganizer(Organizer organizer) {
-        this.organizer = organizer;
+    public Organizer getOrganizer() {
+        return this.organizer;
     }
 
     public String getPassword() {
@@ -62,8 +61,8 @@ public class GamingClubSystem {
      */
     public void initiateSurvey() throws ExecutionException, InterruptedException {
         Survey survey = new Survey();   // seq 1.1.1
-        surveys.add(survey);        // seq 1.1.2
-        // seq 1.1.3 -> 1.1.4 -> 1.1.5
+        surveys.add(survey);
+        // seq 1.1.2 -> 1.1.3 -> 1.1.4
         survey.getController().startSurvey();
     }
 
@@ -106,12 +105,12 @@ public class GamingClubSystem {
             double skill = participant.getInterest().getSkillLevel();
             total += skill;
         }
-        return total / participants.size();
+        return total / participants.size(); // seq 4.1
     }
 
     public synchronized String generateId() {
         idCounter++;
-        return "P" + String.format("%03d", idCounter);  // format the ID
+        return "P" + String.format("%03d", idCounter);  // format the ID, seq 1.1.4.5
     }
 
     /**
@@ -128,8 +127,9 @@ public class GamingClubSystem {
      */
     public void initiateFormation() {
         try {
-            MatchingStrategy builder = new BalancedStrategy();
-            List<Team> formedTeams = builder.buildTeams(participants, Team.getSize());
+            MatchingStrategy builder = new BalancedStrategy();  // seq 2.1
+            List<Team> formedTeams = builder.buildTeams(participants, Team.getSize());  // seq 2.2 for get size()
+            // seq 2.4
 
             FileHandler.exportToCSV(formedTeams, "resources/formed_teams.csv");
             Logger.getInstance().info("Teams formed successfully.");

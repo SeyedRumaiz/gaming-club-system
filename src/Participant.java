@@ -56,7 +56,7 @@ public class Participant extends User {
         return ID + "," + getName() + "," + email + "," + interest.getGame() + "," +
                 + interest.getSkillLevel() + "," + interest.getRole().name().substring(0, 1).toUpperCase()
                 + interest.getRole().name().substring(1).toLowerCase() +
-                "," + (int) personality.getScore() + "," + personality.getType();
+                "," + (int) personality.getSCORE() + "," + personality.getType();
     }
 
     @Override

@@ -29,22 +29,22 @@ public class BalancedTeamWorker implements Callable<Team> {
     @Override
     public Team call() {
         // Create team
-        Team team = new Team(teamId);
+        Team team = new Team(teamId);   // seq 5
         List<Participant> selected = new ArrayList<>();
 
         try {
             // Add Leader
-            strategy.addLeader(selected, teamSize, leaders);
+            strategy.addLeader(selected, teamSize, leaders);    // seq 6
 
             // Add Thinkers
-            strategy.addThinkers(selected, teamSize, thinkers, random);
+            strategy.addThinkers(selected, teamSize, thinkers, random); // seq 7
 
             // Fill with Balanced
-            strategy.fillWithBalanced(selected, teamSize, balanced, targetAverage);
+            strategy.fillWithBalanced(selected, teamSize, balanced, targetAverage); // seq 8
 
             // Add to team
             for (Participant participant : selected) {
-                team.addParticipant(participant);
+                team.addParticipant(participant);   // seq 11
             }
 
         } catch (Exception e) {

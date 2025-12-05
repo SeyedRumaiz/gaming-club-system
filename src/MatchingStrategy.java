@@ -11,7 +11,7 @@ public interface MatchingStrategy {
      * @param teamSize the number of participants per team
      * @return a list of built teams
      * @throws InterruptedException if a thread is interrupted
-     * @throws ExecutionException
+     * @throws ExecutionException if execution fails
      */
     List<Team> buildTeams(List<Participant> participants, short teamSize)
             throws InterruptedException, ExecutionException;

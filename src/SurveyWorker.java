@@ -20,7 +20,7 @@ public class SurveyWorker implements Callable<Boolean> {
         try {
             // Classify
             Personality personality = new Personality(response.getTotalRating());
-            PersonalityClassifier.classify(personality);
+            PersonalityClassifier.classify(personality);    // seq 1.1.4.18.4
 
             // Create participant from the response received
             Interest interest = new Interest(response.getPreferredGame(), response.getPreferredRole(),
@@ -29,7 +29,9 @@ public class SurveyWorker implements Callable<Boolean> {
             Participant participant = new Participant(response.getName(),
                     response.getID(), response.getEmail(), interest, personality, response);
 
-            FileHandler.saveParticipant(participant);   // save the participant to the file
+            FileHandler.saveParticipant(participant);   // save the participant to the file, seq 1.1.4.18.19
+
+            // seq 1.1.4.18.20
             GamingClubSystem.getInstance().addParticipant(participant); // add the participant to the system
             return true;
         } catch (Exception e) {
