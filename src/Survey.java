@@ -88,9 +88,11 @@ public class Survey {
                                       short skillLevel,
                                       Role preferredRole, String preferredGame,
                                       short[] ratings) {
-        // seq 7.3.1
+        // seq 1.1.4.12
+
+        // seq 1.1.4.12.1
         SurveyResponse response = new SurveyResponse(ID, name, email, skillLevel, preferredRole, preferredGame, ratings);
         responses.add(response);
-        return response;    // seq 7.3.2
+        return response;    // seq 1.1.4.12.2
     }
 }

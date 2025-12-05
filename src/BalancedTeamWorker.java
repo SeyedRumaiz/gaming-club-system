@@ -29,7 +29,7 @@ public class BalancedTeamWorker implements Callable<Team> {
     @Override
     public Team call() {
         // Create team
-        Team team = new Team(teamId);   // seq 5
+        Team team = new Team(teamId);   // seq 5.1.2.1
         List<Participant> selected = new ArrayList<>();
 
         try {

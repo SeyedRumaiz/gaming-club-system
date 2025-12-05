@@ -13,12 +13,12 @@ public class BalancedStrategy implements MatchingStrategy {
     public List<Team> buildTeams(List<Participant> participants, short teamSize) throws InterruptedException, ExecutionException {
         // Setup logger
         Logger logger = Logger.getInstance();
-        logger.info("Starting team formation for " + participants.size() + " participants");    // seq 3
+        logger.info("Starting team formation for " + participants.size() + " participants");    // seq 4
 
         // Shuffle and categorization setup
         GamingClubSystem gamingClubSystem = GamingClubSystem.getInstance();
         Collections.shuffle(participants);  // shuffle to prevent bias
-        double targetAverage = gamingClubSystem.getAllParticipantsAverage();    // seq 4
+        double targetAverage = gamingClubSystem.getAllParticipantsAverage();    // seq 5
 
         // Creating thread safe lists to prevent race conditions (since multiple threads remove at same time)
         List<Participant> leaders = Collections.synchronizedList(new ArrayList<>());
@@ -26,7 +26,7 @@ public class BalancedStrategy implements MatchingStrategy {
         List<Participant> balanced = Collections.synchronizedList(new ArrayList<>());
 
         // Categorise/splitting each participant into their personality types
-        categorizeParticipants(participants, leaders, thinkers, balanced);  // seq 4.1.1
+        categorizeParticipants(participants, leaders, thinkers, balanced);  // seq 5.1.1
 
         // Thread pool setup
         int totalTeams = (int) Math.ceil((double) participants.size() / teamSize);
@@ -38,7 +38,7 @@ public class BalancedStrategy implements MatchingStrategy {
 
         // One worker per team
         for (int teamId = 1; teamId <= totalTeams; teamId++) {
-            BalancedTeamWorker worker = new BalancedTeamWorker( // seq 4.1.2
+            BalancedTeamWorker worker = new BalancedTeamWorker( // seq 5.1.2
                     teamId, teamSize, targetAverage, leaders, thinkers, balanced, this
             );
             futures.add(executor.submit(worker));

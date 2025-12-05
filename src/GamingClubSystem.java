@@ -105,7 +105,7 @@ public class GamingClubSystem {
             double skill = participant.getInterest().getSkillLevel();
             total += skill;
         }
-        return total / participants.size(); // seq 4.1
+        return total / participants.size(); // seq 5.1
     }
 
     public synchronized String generateId() {
@@ -129,10 +129,11 @@ public class GamingClubSystem {
         try {
             MatchingStrategy builder = new BalancedStrategy();  // seq 2.1
             List<Team> formedTeams = builder.buildTeams(participants, Team.getSize());  // seq 2.2 for get size()
-            // seq 2.4
+            // seq 3.1
 
+            // seq 10.4.1
             FileHandler.exportToCSV(formedTeams, "resources/formed_teams.csv");
-            Logger.getInstance().info("Teams formed successfully.");
+            Logger.getInstance().info("Teams formed successfully.");    // seq 10.4.2
         } catch (ExecutionException | InterruptedException e) {
             Logger.getInstance().error("Error: " + e.getMessage());
         }
